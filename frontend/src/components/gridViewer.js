@@ -68,7 +68,6 @@ function GridEditor() {
                 ))
                 }
                 </table>
-                <p>Cliquer sur une case et taper la lettre désiré, Retour arrière pour re-initialiser la case.</p>
                 <h3>Définitions</h3>
                 <h4>Horizontalement</h4>
                 <div>
