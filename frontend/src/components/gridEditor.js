@@ -142,7 +142,7 @@ function GridEditor(props) {
                 body: JSON.stringify({
                     width: dimensions[0],
                     height: dimensions[1],
-                    title: title !== '' ? title : 'Grille sans titre',
+                    title: !!title ? title : 'Grille sans titre',
                     solution: solutions.map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join(''),
                     definitions: def,
                     published: pub ? (!solutions.map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('').includes('_')) : false
@@ -205,7 +205,7 @@ function GridEditor(props) {
                 <input name="height" type="number" min="1" onChange={onChangeHeight} defaultValue={dimensions[1]}></input>
                 <button class="btn btn-primary" onClick={freezeDimensions}>Continuer</button>
             </>)}
-            {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.Value)} placeholder="Titre de la grille" defaultValue={title}></input> {pub && <span class="badge bg-danger">publié</span>}<table>
+            {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input> {pub && <span class="badge bg-danger">publié</span>}<table>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} readOnly value={solutions[i][j] ? val : ''}/></td>))}</tr>
