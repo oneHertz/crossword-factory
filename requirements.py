@@ -5,3 +5,4 @@ uwsgi
 django-rest-knox
 django-cors-headers
 requests
+bs4
