@@ -68,20 +68,29 @@ function GridEditor() {
                 ))
                 }
                 </table>
+                <div style={{fontSize: '.7em'}}>
                 <h3>Définitions</h3>
-                <h4>Horizontalement</h4>
-                <div>
-                {def[0].map((l, i) => (
-                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><span>{l}</span></div>
-                ))}
+                <div class="row">
+                    <div class="col-6" style={{borderRight: '1px solid #000'}}>
+                        <h4>Horizontalement</h4>
+                        <div>
+                        {def[0].map((l, i) => (
+                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><span>{l}</span></div>
+                        ))}
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <h4>Verticalement</h4>
+                        <div>
+                        {def[1].map((l, i) => (
+                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><span>{l}</span></div>
+                        ))}
+                        </div>
+                    </div>
                 </div>
-                <h4>Verticalement</h4>
-                <div>
-                {def[1].map((l, i) => (
-                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><span>{l}</span></div>
-                ))}
                 </div>
-                </div>)
+            </div>)
             }
             <button class="btn btn-primary" onClick={print}>Imprimer</button>
         </div>
