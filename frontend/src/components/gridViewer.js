@@ -24,12 +24,21 @@ function GridEditor() {
             const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id)
             const d = await r.json()
             setTitle(d.title)
+            let savedGrid = '';
+            try {
+                savedGrid = JSON.parse(window.localStorage.getItem(gridId)).map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('');
+            } catch(e) {}
             const a = []
             for (let j=0; j< d.height; j++){
                 a.push([])
                 for (let i=0; i< d.width; i++){
                     const ch = d.grid[j*d.width+i]
-                    a[j].push(ch === '_' ? '': ch.toUpperCase())
+                    if (savedGrid.length) {
+                        const cha = ch === ' ' ? ch : savedGrid[j*d.width+i];
+                        a[j].push(cha === '_' ? '' : cha.toUpperCase())
+                    } else {
+                        a[j].push(ch === '_' ? '': ch.toUpperCase())
+                    }
                 }
             }
             setSolutions(a)
@@ -80,6 +89,7 @@ function GridEditor() {
             setSolutions(newSol)
             setSelectedBlock(null);
             document.activeElement.blur();
+            window.localStorage.setItem(gridId, JSON.stringify(newSol));
         }
         if(char === 'backspace'){
             const newSol = solutions;
@@ -87,6 +97,7 @@ function GridEditor() {
             setSolutions(newSol)
             setSelectedBlock(null);
             document.activeElement.blur();
+            window.localStorage.setItem(gridId, JSON.stringify(newSol));
         }
     }
 
