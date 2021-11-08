@@ -81,6 +81,10 @@ function GridEditor(props) {
     }
    
     const selectBlock = (i, j) => {
+        if (i===null) {
+            setSelectedBlock(null)
+            return
+        }
         setSelectedBlock([i, j])
     }
 
@@ -170,7 +174,7 @@ function GridEditor(props) {
             body: JSON.stringify({
                 width: dimensions[0],
                 height: dimensions[1],
-                title: title !== '' ? title : 'Grille sans titre',
+                title: !!title ? title : 'Grille sans titre',
                 solution: solutions.map(l=>l.map(c=> (c === ' ' ? '#' : c.toLowerCase())).join('')).join(''),
                 definitions: def,
                 published: true
@@ -212,7 +216,7 @@ function GridEditor(props) {
                 ))
                 }
                 </table>
-                <p>Cliquer sur une case et taper la lettre désiré, Espace pour noircire la case, Retour arrière pour re-initialiser la case.</p>
+                <p>Cliquer sur une case et taper la lettre désiré, Espace pour noircire la case, Retour arrière pour re-initialiser la case. Une fois la grille remplie vous aurez la posibilité de publier la grille.</p>
                 <div style={{marginTop: '15px'}}>
                     <button class="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
                 </div>

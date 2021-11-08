@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import useGlobalState from '../utils/useGlobalState'
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from 'react-to-print';
+import ShareModal from './shareModal';
 const pkg = require('../../package.json')
 
 
@@ -9,6 +10,7 @@ function GridEditor() {
     const globalState = useGlobalState()
     const [solutions, setSolutions] = useState([])
     const [title, setTitle] = useState('')
+    const [selectedBlock, setSelectedBlock] = useState(null)
     const [def, setDef] = useState([[], []])
     const { username, api_token } = globalState.user
     const {uid: gridId} = useParams();
@@ -59,15 +61,61 @@ function GridEditor() {
         return Array(+digits.join("") + 1).join("M") + roman;
     }
 
+    const selectBlock = (i, j) => {
+        if (i===null) {
+            setSelectedBlock(null)
+            return
+        }
+        if (solutions[i][j] !== ' ') {
+          setSelectedBlock([i, j])
+        }
+    }
+
+    const setSolutionXY = (i, j, e) => {
+        e.preventDefault()
+        const char = e.key.toLowerCase()
+        if (char.length === 1 && /[a-z-]/.test(char)){
+            const newSol = solutions;
+            newSol[i][j] = char.toUpperCase()
+            setSolutions(newSol)
+            setSelectedBlock(null);
+            document.activeElement.blur();
+        }
+        if(char === 'backspace'){
+            const newSol = solutions;
+            newSol[i][j] = ''
+            setSolutions(newSol)
+            setSelectedBlock(null);
+            document.activeElement.blur();
+        }
+    }
+
+    let webShareApiAvailable = false
+    if (navigator.canShare) {
+      webShareApiAvailable = true
+    }
+
+    const [shareModalOpen, setShareModalOpen] = useState(false)
+    const share = () => {
+      if(webShareApiAvailable) {
+        try {
+          navigator.share({url: document.location.href}).then(()=>{}).catch(()=>{});
+        } catch (e) {}
+      } else {
+        setShareModalOpen(true)
+      }
+    }
+
     return (
         <div className="container main-container">
-            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title}</h1><table>
+            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title} <button onClick={share} class="btn btn-info">Partager</button></h1><table>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
-                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000', backgroundColor: (val === ' ' ? 'black' : 'white')}}><span style={{textAlign: 'center'}}>{solutions[i][j] ? val : ''}</span></td>))}</tr>
+                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''}/></td>))}</tr>
                 ))
                 }
                 </table>
+                <p>Cliquer sur une case et taper la lettre désiré, Retour arrière pour re-initialiser la case.</p>
                 <div style={{fontSize: '.7em'}}>
                 <h3>Définitions</h3>
                 <div class="row">
@@ -93,6 +141,7 @@ function GridEditor() {
             </div>)
             }
             <button class="btn btn-primary" onClick={print}>Imprimer</button>
+            {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
         </div>
     )
 }
