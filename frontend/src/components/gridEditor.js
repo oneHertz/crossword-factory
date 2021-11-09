@@ -89,21 +89,39 @@ function GridEditor(props) {
     }
 
     const setSolutionXY = (i, j, e) => {
+        e.persist();
         e.preventDefault()
         const char = e.key.toLowerCase()
         if (char.length === 1 && /[a-z -]/.test(char)){
             const newSol = solutions;
             newSol[i][j] = char.toUpperCase()
+            e.target.value = char.toUpperCase()
+            setSolutions(newSol)
+            setSelectedBlock(null);
+            document.activeElement.blur();
+            
+        }
+        if(char === 'backspace' || e.keyCode === 8){
+            const newSol = solutions;
+            newSol[i][j] = ''
+            e.target.value = ''
             setSolutions(newSol)
             setSelectedBlock(null);
             document.activeElement.blur();
         }
-        if(char === 'backspace'){
-            const newSol = solutions;
-            newSol[i][j] = ''
+    }
+
+    const onSquareChanged = (i, j, e)=>{
+        const c = e.target.value ? e.target.value.toUpperCase()[e.target.value.length-1] : '';
+        if(c.length === 1 && /[A-Z -]/.test(c)){
+            const newSol = solutions
+            newSol[i][j] = c
+            e.target.value = c
             setSolutions(newSol)
             setSelectedBlock(null);
             document.activeElement.blur();
+        } else {
+            e.target.value = ''
         }
     }
 
@@ -212,7 +230,7 @@ function GridEditor(props) {
             {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input> {pub && <span class="badge bg-danger">publié</span>}<table>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
-                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} value={solutions[i][j] ? val : ''}/></td>))}</tr>
+                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
                 ))
                 }
                 </table>
