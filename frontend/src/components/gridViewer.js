@@ -114,6 +114,7 @@ function GridEditor() {
             setSolutions(newSol)
             setSelectedBlock(null);
             document.activeElement.blur();
+            window.localStorage.setItem(gridId, JSON.stringify(newSol));
         } else {
             e.target.value = ''
         }
