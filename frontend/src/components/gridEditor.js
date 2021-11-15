@@ -172,7 +172,11 @@ function GridEditor(props) {
             })
             if (response.status===200 || response.status===201) {
                 const res = await response.json();
-                window.location = `/grille/${res.id}/modifier`
+                if(window.location.toString().includes('modifier')) {
+                    window.location.reload();
+                } else {
+                    window.location = `/grille/${res.id}/modifier`
+                }
             } else {
                 throw new Error('not ok status')
             }
@@ -217,7 +221,7 @@ function GridEditor(props) {
                 published: false
             })
         })
-        window.location = '/grille/' + gridId + '/modifier'
+        window.location.reload();
     }
     const deleteG = async () => {
         await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
@@ -280,7 +284,7 @@ function GridEditor(props) {
                     <button class="btn btn-success" onClick={publish}>Publier</button>
                 </div>}
                 {isGridFull() && gridId && pub && <div style={{marginTop: '15px'}}>
-                    <button class="btn btn-success" onClick={unpublish}>Depublier</button>
+                    <button class="btn btn-success" onClick={unpublish}>Dépublier</button>
                 </div>}
                 </>)
             }
