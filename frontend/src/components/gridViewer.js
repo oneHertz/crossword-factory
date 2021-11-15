@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
+
 import useGlobalState from '../utils/useGlobalState'
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from 'react-to-print';
 import ShareModal from './shareModal';
 const pkg = require('../../package.json')
-
 
 function GridEditor() {
     const globalState = useGlobalState()
@@ -54,7 +54,6 @@ function GridEditor() {
         if (gridId) {
             (async () => (await loadGrid(gridId)))()
         }
-            
     }, [gridId])
 
 
@@ -138,6 +137,41 @@ function GridEditor() {
       }
     }
 
+    const isGridFull = () => {
+        return solutions.map(l=>l.map(c=> c).join('')).join('').length === solutions.length*solutions[0].length
+    }
+    const checkSolution = async () => {
+        const { createHash } = await import('crypto');
+        const txt = solutions.map(l=>l.map(c=> c).join('')).join('');
+        const h = createHash('sha256')
+        h.update(txt)
+        const solutionHash = h.digest('base64').replace('=', '').replace('+', '-').replace('/', '_')
+        
+        try {
+            const resp = await fetch(
+                process.env.REACT_APP_API_URL + '/grid/' + gridId + '/check',
+                {
+                    method: 'POST',
+                    credentials: 'omit',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({hash: solutionHash})
+                }
+            )
+            if(resp.status === 200){
+                const data = await resp.json()
+                if (data.is_ok) {
+                    alert('Bravo, votre solution est correcte!')
+                } else {
+                    alert('Desolé, votre solution est érronée!')
+                }
+            }
+        } catch(e) {
+            alert('Une erreur est survenue...')
+        }
+    }
+
     return (
         <div className="container main-container">
             { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title} <button onClick={share} class="btn btn-info inv">Partager</button></h1><table className="t">
@@ -152,6 +186,7 @@ function GridEditor() {
                 }
                 </table>
                 <p className='inv'>Cliquer sur une case et taper la lettre désiré, Retour arrière pour re-initialiser la case.</p>
+                {isGridFull() && <p><button className="btn btn-secondary inv" onClick={checkSolution}>Verifier votre solution</button></p>}
                 <div className='d'>
                 <h3>Définitions</h3>
                 <div class="row">

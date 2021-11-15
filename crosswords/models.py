@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from utils.helpers import random_key
 import re
+import hashlib
+import base64
 
 # Create your models here.
 class Grid(models.Model):
@@ -28,6 +30,12 @@ class Grid(models.Model):
     @property
     def grid(self):
         return re.sub(r'[a-z-]', '_', self.solution)
+
+    def check_solution(self, hash):
+        sol_h = hashlib.sha256()
+        sol_h.update(self.grid.encode('ascii'))
+        sol_d = base64.urlsafe_b64encode(sol_h.digest()).decode('ascii').replace('=', '')
+        return sol_d == hash
 
     class Meta:
         ordering = ['-creation_date']
