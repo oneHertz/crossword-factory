@@ -140,15 +140,19 @@ function GridEditor() {
 
     return (
         <div className="container main-container">
-            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title} <button onClick={share} class="btn btn-info">Partager</button></h1><table>
+            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title} <button onClick={share} class="btn btn-info inv">Partager</button></h1><table className="t">
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
-                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/></td>))}</tr>
+                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td className={'box ' + (val === ' ' ? 'blackBox': '')}>
+                        {val !== ' ' && (
+                        <input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} className='iBox' style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
+                        )}
+                    </td>))}</tr>
                 ))
                 }
                 </table>
-                <p>Cliquer sur une case et taper la lettre désiré, Retour arrière pour re-initialiser la case.</p>
-                <div style={{fontSize: '.7em'}}>
+                <p className='inv'>Cliquer sur une case et taper la lettre désiré, Retour arrière pour re-initialiser la case.</p>
+                <div className='d'>
                 <h3>Définitions</h3>
                 <div class="row">
                     <div class="col-6" style={{borderRight: '1px solid #000'}}>
