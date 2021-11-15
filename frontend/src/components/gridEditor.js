@@ -200,6 +200,25 @@ function GridEditor(props) {
         })
         window.location = '/grille/' + gridId
     }
+    const unpublish = async () => {
+        await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
+            method: 'PUT',
+            credentials: 'omit',
+            headers: {
+                'Authorization': 'Token ' + api_token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                width: dimensions[0],
+                height: dimensions[1],
+                title: !!title ? title : 'Grille sans titre',
+                solution: solutions.map(l=>l.map(c=> (c === ' ' ? '#' : c.toLowerCase())).join('')).join(''),
+                definitions: def,
+                published: false
+            })
+        })
+        window.location = '/grille/' + gridId + '/modifier'
+    }
     const deleteG = async () => {
         await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
             method: 'DELETE',
@@ -242,13 +261,13 @@ function GridEditor(props) {
                 <h4>Horizontalement</h4>
                 <div>
                 {solutions.map((l, i) => (
-                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><input  style={{width: '500px'}} type="text"  onChange={(e) => setHorizontalDef(i, e.target.value)} defaultValue={def[0][i]}></input></div>
+                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><textarea style={{width: '500px'}} rows="4" cols="50"  onChange={(e) => setHorizontalDef(i, e.target.value)} defaultValue={def[0][i]}></textarea></div>
                 ))}
                 </div>
                 <h4>Verticalement</h4>
                 <div>
                 {solutions[0].map((l, i) => (
-                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><input style={{width: '500px'}} type="text" onChange={(e) => setVerticalDef(i, e.target.value)} defaultValue={def[1][i]}></input></div>
+                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><textarea style={{width: '500px'}} rows="4" cols="50" onChange={(e) => setVerticalDef(i, e.target.value)} defaultValue={def[1][i]}></textarea></div>
                 ))}
                 </div>
                 <div style={{marginTop: '15px'}}>
@@ -257,8 +276,11 @@ function GridEditor(props) {
                 <div style={{marginTop: '15px'}}>
                     <button class="btn btn-danger" onClick={deleteG}>Supprimer</button>
                 </div>
-                {isGridFull() && gridId && <div style={{marginTop: '15px'}}>
+                {isGridFull() && gridId && !pub && <div style={{marginTop: '15px'}}>
                     <button class="btn btn-success" onClick={publish}>Publier</button>
+                </div>}
+                {isGridFull() && gridId && pub && <div style={{marginTop: '15px'}}>
+                    <button class="btn btn-success" onClick={unpublish}>Depublier</button>
                 </div>}
                 </>)
             }

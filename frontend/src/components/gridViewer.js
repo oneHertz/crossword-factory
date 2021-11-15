@@ -42,7 +42,9 @@ function GridEditor() {
                 }
             }
             setSolutions(a)
-            setDef(d.definitions)
+            const defH = d.definitions[0].map(t=>t.replace('\n', ' ').replace('\r', ''))
+            const defV = d.definitions[1].map(t=>t.replace('\n', ' ').replace('\r', ''))
+            setDef([defH, defV])
         } catch(e) {
             window.location = '/'
         }
