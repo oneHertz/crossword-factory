@@ -33,7 +33,7 @@ class Grid(models.Model):
 
     def check_solution(self, hash):
         sol_h = hashlib.sha256()
-        sol_h.update(self.grid.encode('ascii'))
+        sol_h.update(self.solution.encode('ascii'))
         sol_d = base64.urlsafe_b64encode(sol_h.digest()).decode('ascii').replace('=', '')
         return sol_d == hash
 

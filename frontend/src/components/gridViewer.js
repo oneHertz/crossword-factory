@@ -142,9 +142,9 @@ function GridEditor() {
     }
     const checkSolution = async () => {
         const { createHash } = await import('crypto');
-        const txt = solutions.map(l=>l.map(c=> c).join('')).join('');
+        const txt = solutions.map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('')
         const h = createHash('sha256')
-        h.update(txt)
+        h.update(txt, 'ascii')
         const solutionHash = h.digest('base64').replace('=', '').replace('+', '-').replace('/', '_')
         
         try {
