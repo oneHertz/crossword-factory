@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useGlobalState from '../utils/useGlobalState'
 import { useParams } from "react-router-dom";
+import ShareModal from './shareModal';
 const pkg = require('../../package.json')
 
 function GridEditor(props) {
@@ -49,8 +50,7 @@ function GridEditor(props) {
     useEffect(()=>{
         if (gridId) {
             (async () => (await loadGrid(gridId)))()
-        }
-            
+        }  
     }, [gridId])
 
     const onChangeWidth = (ev) => {
@@ -224,6 +224,10 @@ function GridEditor(props) {
         window.location.reload();
     }
     const deleteG = async () => {
+        const conf = window.confirm('Etes vous sûre?')
+        if(!conf){
+            return
+        }
         await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
             method: 'DELETE',
             credentials: 'omit',
@@ -238,6 +242,52 @@ function GridEditor(props) {
     const isGridFull = () => {
         return solutions.map(l=>l.map(c=> c).join('')).join('').length === dimensions[0]*dimensions[1]
     }
+
+
+    let webShareApiAvailable = false
+    if (navigator.canShare) {
+      webShareApiAvailable = true
+    }
+
+    const getRootUrl = () => {
+        const port = window.location.port
+        const host = window.location.hostname
+        const scheme = window.location.protocol
+        const ignorePort = (port === '') || (scheme === 'https:' && port === '443') || (scheme === 'http:' && port === '80')
+        return `${scheme}//${host}${ignorePort ? '' : `:${port}`}/`
+    }
+
+    const [shareModalOpen, setShareModalOpen] = useState(false)
+    const [sharedUrl, setSharedUrl] = useState('')
+    const share = () => {
+      const url = getRootUrl() + 'grille/' + gridId
+      setSharedUrl(url)
+      if(webShareApiAvailable) {
+        try {
+          navigator.share({url}).then(()=>{}).catch(()=>{})
+        } catch (e) {}
+      } else {
+        setShareModalOpen(true)
+      }
+    }
+
+    const shareSolution = async () => {
+        const { createHash } = await import('crypto');
+        const txt = solutions.map(l=>l.map(c=> c.toLowerCase()).join('')).join('')
+        const h = createHash('sha256')
+        h.update(txt, 'ascii')
+        const solutionHash = h.digest('base64').replace('=', '').replace('+', '-').replace('/', '_')
+        const url = getRootUrl() + 'grille/' + gridId + '/solution/' + solutionHash
+        setSharedUrl(url)
+        if(webShareApiAvailable) {
+            try {
+              navigator.share({url}).then(()=>{}).catch(()=>{});
+            } catch (e) {}
+        } else {
+            setShareModalOpen(true)
+        }
+    }
+
     return (
         <div className="container main-container">
             <h1>{gridId ? 'Editeur de grille':'Nouvelle grille'} </h1>
@@ -250,7 +300,7 @@ function GridEditor(props) {
                 <input name="height" type="number" min="1" onChange={onChangeHeight} defaultValue={dimensions[1]}></input>
                 <button class="btn btn-primary" onClick={freezeDimensions}>Continuer</button>
             </>)}
-            {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input> {pub && <span class="badge bg-danger">publié</span>}<table>
+            {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input>{pub && (<> <span class="badge bg-danger">publié</span> <button onClick={share} class="btn btn-info inv">Partager la grille</button> <button onClick={shareSolution} class="btn btn-info inv">Partager la solution</button></>)}<table>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
@@ -275,19 +325,20 @@ function GridEditor(props) {
                 ))}
                 </div>
                 <div style={{marginTop: '15px'}}>
-                    <button class="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
+                    <button className="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
                 </div>
                 <div style={{marginTop: '15px'}}>
-                    <button class="btn btn-danger" onClick={deleteG}>Supprimer</button>
+                    <button className="btn btn-danger" onClick={deleteG}>Supprimer</button>
                 </div>
                 {isGridFull() && gridId && !pub && <div style={{marginTop: '15px'}}>
-                    <button class="btn btn-success" onClick={publish}>Publier</button>
+                    <button className="btn btn-success" onClick={publish}>Publier</button>
                 </div>}
                 {isGridFull() && gridId && pub && <div style={{marginTop: '15px'}}>
-                    <button class="btn btn-success" onClick={unpublish}>Dépublier</button>
+                    <button className="btn btn-success" onClick={unpublish}>Dépublier</button>
                 </div>}
                 </>)
             }
+            {shareModalOpen && <ShareModal url={sharedUrl} onClose={()=>setShareModalOpen(false)}/> }
         </div>
     )
 }

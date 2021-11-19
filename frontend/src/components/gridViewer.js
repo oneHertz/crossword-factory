@@ -12,6 +12,7 @@ function GridEditor() {
     const [title, setTitle] = useState('')
     const [selectedBlock, setSelectedBlock] = useState(null)
     const [def, setDef] = useState([[], []])
+    const [author, setAuthor] = useState(null);
     const { username, api_token } = globalState.user
     const {uid: gridId} = useParams();
     const componentRef = React.useRef();
@@ -24,7 +25,8 @@ function GridEditor() {
             const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id)
             const d = await r.json()
             setTitle(d.title)
-            let savedGrid = '';
+            setAuthor(d.author)
+            let savedGrid = ''
             try {
                 savedGrid = JSON.parse(window.localStorage.getItem(gridId)).map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('');
             } catch(e) {}
@@ -142,7 +144,7 @@ function GridEditor() {
     }
     const checkSolution = async () => {
         const { createHash } = await import('crypto');
-        const txt = solutions.map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('')
+        const txt = solutions.map(l=>l.map(c=>c.toLowerCase()).join('')).join('')
         const h = createHash('sha256')
         h.update(txt, 'ascii')
         const solutionHash = h.digest('base64').replace('=', '').replace('+', '-').replace('/', '_')
@@ -211,7 +213,7 @@ function GridEditor() {
                 </div>
             </div>)
             }
-            <button class="btn btn-primary" onClick={print}>Imprimer</button>
+            <button className="btn btn-primary" onClick={print}>Imprimer</button>
             {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
         </div>
     )
