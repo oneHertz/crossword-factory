@@ -114,4 +114,6 @@ def check_grid_solution(request, uid):
     submited_solution_hash = request.data.get('hash')
     if not submited_solution_hash:
         raise ValidationError('missing hash')
-    return Response({'is_ok': grid.check_solution(submited_solution_hash)})
+    if grid.check_solution(submited_solution_hash):
+        return Response({'is_ok': True, 'solution': grid.solution})
+    return Response({'is_ok': False})
