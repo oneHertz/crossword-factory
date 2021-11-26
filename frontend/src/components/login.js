@@ -66,7 +66,7 @@ const Login = () => {
           <Link to="/"><button class="btn btn-secondary btn-sm">Index</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Quitter</button>&nbsp;
         </div>}
       {!username && (<div style={{textAlign:'right'}}>
-        <Link to="/"><button class="btn btn-secondary btn-sm">Index</button></Link> <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Enregistrement</button>
+        <Link to="/"><button class="btn btn-secondary btn-sm">Index</button></Link> <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Connection</button>
           &nbsp;
         </div>)}
       {!username && wantLogin && (<div>
@@ -74,7 +74,7 @@ const Login = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header" style={{padding:'35px 50px'}}>
-                <h4><i className="fas fa-sign-in-alt"></i>  Enregistrement</h4>
+                <h4><i className="fas fa-sign-in-alt"></i>  Connection</h4>
               </div>
               <div className="modal-body" style={{padding:'40px 50px'}}>
                 {errors.non_field_errors && errors.non_field_errors.map(e=>

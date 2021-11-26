@@ -147,7 +147,7 @@ function GridEditor() {
         const txt = solutions.map(l=>l.map(c=>c.toLowerCase()).join('')).join('')
         const h = createHash('sha256')
         h.update(txt, 'ascii')
-        const solutionHash = h.digest('base64').replace('=', '').replace('+', '-').replace('/', '_')
+        const solutionHash = h.digest('base64').replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_')
         
         try {
             const resp = await fetch(
