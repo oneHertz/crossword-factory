@@ -61,7 +61,7 @@ const Login = () => {
       window.location = "/"
     }
     return (
-      <div style={{marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
+      <div style={{marginTop: '15px', marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
       {username && <div style={{textAlign:'right'}}>
           <Link to="/"><button class="btn btn-secondary btn-sm">Index</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Quitter</button>&nbsp;
         </div>}
