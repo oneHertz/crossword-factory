@@ -11,11 +11,16 @@ function GridEditor() {
     const [solutions, setSolutions] = useState([])
     const [title, setTitle] = useState('')
     const [selectedBlock, setSelectedBlock] = useState(null)
+    const [writingDirection, setWritingDirection] = useState('h')
+    const [minHighlight, setMinHighlight] = useState(null)
+    const [maxHighlight, setMaxHighlight] = useState(null)
     const [def, setDef] = useState([[], []])
     const [author, setAuthor] = useState(null);
     const { username, api_token } = globalState.user
     const {uid: gridId} = useParams();
     const componentRef = React.useRef();
+    const aaa = React.useRef([]);
+ 
     const print = useReactToPrint({
       content: () => componentRef.current,
     });
@@ -73,13 +78,102 @@ function GridEditor() {
         return Array(+digits.join("") + 1).join("M") + roman;
     }
 
+    const selectNextBlock = (i, j) => {
+        var wd = writingDirection
+        var maxH = maxHighlight
+        if (wd === 'h') {
+            if (j + 1 < maxH) {
+                selectBlock(i, j + 1)
+            } else {
+                selectBlock(null)
+            }
+        }
+        if (wd === 'v') {
+            if (i + 1 < maxH) {
+                selectBlock(i + 1, j)
+            } else {
+                selectBlock(null)
+            }
+        }
+    }
+
+    React.useEffect(()=>{
+        if(selectedBlock)
+            aaa.current[selectedBlock[0]+'_'+selectedBlock[1]].focus()
+    }, [selectedBlock, aaa.current])
+
+    const switchWritingDir = (i, j, sb) => {
+        let wd = writingDirection
+        if(selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) {
+            if (wd === 'h') {
+                wd = 'v'
+            } else {
+                wd = 'h'
+            }
+        } else  {
+            wd = 'h'  
+        }
+        if (wd === 'h') {
+            var minH = j
+            while (minH >= 0 && solutions[i][minH] !== ' ') {
+                minH -= 1
+            }
+            setMinHighlight(minH)
+            var maxH = j
+            while (maxH < solutions[0].length && solutions[i][maxH] !== ' ') {
+                maxH += 1
+            }
+            setMaxHighlight(maxH)
+        }
+        if (wd === 'v') {
+            var minH = i
+            while (minH >= 0 && solutions[minH][j] !== ' ') {
+                minH -= 1
+            }
+            setMinHighlight(minH)
+            var maxH = i
+            while (maxH < solutions.length && solutions[maxH][j] !== ' ') {
+                maxH += 1
+            }
+            setMaxHighlight(maxH)
+        }
+        setWritingDirection(wd)
+        
+    }
     const selectBlock = (i, j) => {
-        if (i===null) {
+        if (i === null) {
             setSelectedBlock(null)
+            document.activeElement.blur()
             return
         }
         if (solutions[i][j] !== ' ') {
-          setSelectedBlock([i, j])
+            document.activeElement.setSelectionRange(0, document.activeElement.value.length)
+            let wd = writingDirection
+            setSelectedBlock([i, j])
+            if (wd === 'h') {
+                var minH = j
+                while (minH >= 0 && solutions[i][minH] !== ' ') {
+                    minH -= 1
+                }
+                setMinHighlight(minH)
+                var maxH = j
+                while (maxH < solutions[0].length && solutions[i][maxH] !== ' ') {
+                    maxH += 1
+                }
+                setMaxHighlight(maxH)
+            }
+            if (wd === 'v') {
+                var minH = i
+                while (minH >= 0 && solutions[minH][j] !== ' ') {
+                    minH -= 1
+                }
+                setMinHighlight(minH)
+                var maxH = i
+                while (maxH < solutions.length && solutions[maxH][j] !== ' ') {
+                    maxH += 1
+                }
+                setMaxHighlight(maxH)
+            }
         }
     }
 
@@ -92,8 +186,7 @@ function GridEditor() {
             newSol[i][j] = char.toUpperCase()
             e.target.value = char.toUpperCase()
             setSolutions(newSol)
-            setSelectedBlock(null);
-            document.activeElement.blur();
+            selectNextBlock(i, j)
             window.localStorage.setItem(gridId, JSON.stringify(newSol));
         }
         if(char === 'backspace' || e.keyCode === 8){
@@ -101,8 +194,7 @@ function GridEditor() {
             newSol[i][j] = ''
             e.target.value = ''
             setSolutions(newSol)
-            setSelectedBlock(null);
-            document.activeElement.blur();
+            selectBlock(i, j)
             window.localStorage.setItem(gridId, JSON.stringify(newSol));
         }
     }
@@ -115,8 +207,7 @@ function GridEditor() {
             newSol[i][j] = c
             e.target.value = c
             setSolutions(newSol)
-            setSelectedBlock(null);
-            document.activeElement.blur();
+            selectNextBlock(i, j)
             window.localStorage.setItem(gridId, JSON.stringify(newSol));
         } else {
             e.target.value = ''
@@ -181,7 +272,7 @@ function GridEditor() {
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td className={'box ' + (val === ' ' ? 'blackBox': '')}>
                         {val !== ' ' && (
-                        <input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} className='iBox' style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
+                        <input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} onMouseDown={()=>{switchWritingDir(i, j, selectedBlock)}} onFocus={() => selectBlock(i, j)} className='iBox' ref={(input) => { aaa.current[i+'_'+j] = input }}  style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0] && j > minHighlight && j < maxHighlight)||(writingDirection === 'v' && j === selectedBlock[1] && i > minHighlight && i < maxHighlight)))?'#f99':(val === ' ' ? 'black' : 'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
                         )}
                     </td>))}</tr>
                 ))
