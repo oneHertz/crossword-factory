@@ -102,7 +102,7 @@ function GridEditor() {
             aaa.current[selectedBlock[0]+'_'+selectedBlock[1]].focus()
     }, [selectedBlock, aaa.current])
 
-    const switchWritingDir = (i, j, sb) => {
+    const switchWritingDir = (i, j) => {
         let wd = writingDirection
         if(selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) {
             if (wd === 'h') {
@@ -272,7 +272,7 @@ function GridEditor() {
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td className={'box ' + (val === ' ' ? 'blackBox': '')}>
                         {val !== ' ' && (
-                        <input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} onMouseDown={()=>{switchWritingDir(i, j, selectedBlock)}} onFocus={() => selectBlock(i, j)} className='iBox' ref={(input) => { aaa.current[i+'_'+j] = input }}  style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0] && j > minHighlight && j < maxHighlight)||(writingDirection === 'v' && j === selectedBlock[1] && i > minHighlight && i < maxHighlight)))?'#f99':(val === ' ' ? 'black' : 'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
+                        <input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} onMouseDown={()=>{switchWritingDir(i, j)}} onFocus={() => selectBlock(i, j)} className='iBox' ref={(input) => { aaa.current[i+'_'+j] = input }}  style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0] && j > minHighlight && j < maxHighlight)||(writingDirection === 'v' && j === selectedBlock[1] && i > minHighlight && i < maxHighlight)))?'#f99':(val === ' ' ? 'black' : 'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
                         )}
                     </td>))}</tr>
                 ))

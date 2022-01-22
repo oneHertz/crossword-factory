@@ -14,8 +14,9 @@ function GridEditor(props) {
     const [pub, setPub] = useState(false)
     const [def, setDef] = useState([[], []])
     const { username, api_token } = globalState.user
+    const [writingDirection, setWritingDirection] = useState('h')
     const {uid: gridId} = useParams();
-
+    const aaa = React.useRef([]);
 
     const loadGrid = async (id) => {
         try {
@@ -79,12 +80,51 @@ function GridEditor(props) {
         setSolutions(arr)
         setDef(arr2)
     }
-   
+
+    const selectNextBlock = (i, j) => {
+        var wd = writingDirection
+        if (wd === 'h') {
+            if (j + 1 < solutions[0].length) {
+                selectBlock(i, j + 1)
+            } else {
+                selectBlock(null)
+            }
+        }
+        if (wd === 'v') {
+            if (i + 1 < solutions.length) {
+                selectBlock(i + 1, j)
+            } else {
+                selectBlock(null)
+            }
+        }
+    }
+
+    React.useEffect(()=>{
+        if(selectedBlock)
+            aaa.current[selectedBlock[0]+'_'+selectedBlock[1]].focus()
+    }, [selectedBlock, aaa.current])
+
+    const switchWritingDir = (i, j) => {
+        let wd = writingDirection
+        if(selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) {
+            if (wd === 'h') {
+                wd = 'v'
+            } else {
+                wd = 'h'
+            }
+        } else  {
+            wd = 'h'  
+        }
+        setWritingDirection(wd)
+
+    }
+
     const selectBlock = (i, j) => {
-        if (i===null) {
+        if (i=== null) {
             setSelectedBlock(null)
             return
         }
+        document.activeElement.setSelectionRange(0, document.activeElement.value.length)
         setSelectedBlock([i, j])
     }
 
@@ -97,8 +137,7 @@ function GridEditor(props) {
             newSol[i][j] = char.toUpperCase()
             e.target.value = char.toUpperCase()
             setSolutions(newSol)
-            setSelectedBlock(null);
-            document.activeElement.blur();
+            selectNextBlock(i, j)
             
         }
         if(char === 'backspace' || e.keyCode === 8){
@@ -106,8 +145,7 @@ function GridEditor(props) {
             newSol[i][j] = ''
             e.target.value = ''
             setSolutions(newSol)
-            setSelectedBlock(null);
-            document.activeElement.blur();
+            selectBlock = (i, j)
         }
     }
 
@@ -118,8 +156,7 @@ function GridEditor(props) {
             newSol[i][j] = c
             e.target.value = c
             setSolutions(newSol)
-            setSelectedBlock(null);
-            document.activeElement.blur();
+            selectNextBlock(i, j)
         } else {
             e.target.value = ''
         }
@@ -303,7 +340,7 @@ function GridEditor(props) {
             {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input>{pub && (<> <span class="badge bg-danger">publié</span> <button onClick={share} class="btn btn-info inv">Partager la grille</button> <button onClick={shareSolution} class="btn btn-info inv">Partager la solution</button></>)}<table>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
-                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' onFocus={() => selectBlock(i, j)} onBlur={() => selectBlock(null)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : 'white'))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
+                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} ref={(input) => { aaa.current[i+'_'+j] = input }}   onMouseDown={()=>{switchWritingDir(i, j)}} onFocus={() => selectBlock(i, j)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0])||(writingDirection === 'v' && j === selectedBlock[1])))?'#f99':'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
                 ))
                 }
                 </table>
