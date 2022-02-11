@@ -17,7 +17,7 @@ const ShareModal = (props) => {
           <div className="modal-content">
             <div className="modal-header" style={{padding:'35px 50px'}}>
               <h4>Partager</h4>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={props.onClose}></button>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={props.onClose}></button>
             </div>
             <div className="modal-body" style={{padding:'40px 50px'}}>
               <form>

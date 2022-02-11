@@ -335,9 +335,9 @@ function GridEditor(props) {
                 <input name="width" type="number" min="1" onChange={onChangeWidth} defaultValue={dimensions[0]}></input>
                 <label for="height">Hauteur</label>
                 <input name="height" type="number" min="1" onChange={onChangeHeight} defaultValue={dimensions[1]}></input>
-                <button class="btn btn-primary" onClick={freezeDimensions}>Continuer</button>
+                <button className="btn btn-primary" onClick={freezeDimensions}>Continuer</button>
             </>)}
-            {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input>{pub && (<> <span class="badge bg-danger">publié</span> <button onClick={share} class="btn btn-info inv">Partager la grille</button> <button onClick={shareSolution} class="btn btn-info inv">Partager la solution</button></>)}<table>
+            {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input>{pub && (<> <span className="badge bg-danger">publié</span> <button onClick={share} className="btn btn-info inv">Partager la grille</button> <button onClick={shareSolution} className="btn btn-info inv">Partager la solution</button></>)}<table>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} ref={(input) => { aaa.current[i+'_'+j] = input }}   onMouseDown={()=>{switchWritingDir(i, j)}} onFocus={() => selectBlock(i, j)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0])||(writingDirection === 'v' && j === selectedBlock[1])))?'#f99':'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
@@ -346,7 +346,7 @@ function GridEditor(props) {
                 </table>
                 <p>Cliquer sur une case et taper la lettre désiré, Espace pour noircire la case, Retour arrière pour re-initialiser la case. Une fois la grille remplie vous aurez la posibilité de publier la grille.</p>
                 <div style={{marginTop: '15px'}}>
-                    <button class="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
+                    <button className="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
                 </div>
                 <h3>Définitions</h3>
                 <h4>Horizontalement</h4>

@@ -267,7 +267,7 @@ function GridEditor() {
 
     return (
         <div className="container main-container">
-            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title} <button onClick={share} class="btn btn-info inv">Partager</button></h1><table className="t">
+            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title} <button onClick={share} className="btn btn-info inv">Partager</button></h1><table className="t">
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td className={'box ' + (val === ' ' ? 'blackBox': '')}>
@@ -282,21 +282,21 @@ function GridEditor() {
                 {isGridFull() && <p><button className="btn btn-secondary inv" onClick={checkSolution}>Verifier votre solution</button></p>}
                 <div className='d'>
                 <h3>Définitions</h3>
-                <div class="row">
-                    <div class="col-6" style={{borderRight: '1px solid #000'}}>
+                <div className="row">
+                    <div className="col-6" style={{borderRight: '1px solid #000'}}>
                         <h4>Horizontalement</h4>
                         <div>
                         {def[0].map((l, i) => (
-                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><span>{l}</span></div>
+                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><span style={(selectedBlock && writingDirection === 'h' && i === selectedBlock[0]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
                         ))}
                         </div>
                     </div>
 
-                    <div class="col-6">
+                    <div className="col-6">
                         <h4>Verticalement</h4>
                         <div>
                         {def[1].map((l, i) => (
-                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><span>{l}</span></div>
+                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><span style={(selectedBlock && writingDirection === 'v' && i === selectedBlock[1]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
                         ))}
                         </div>
                     </div>

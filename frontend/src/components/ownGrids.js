@@ -34,8 +34,8 @@ function OwnGrids() {
         <div className="container main-container">
             { !!list.length ? (list.map((e=>(
                 <><div style={{width: '100%'}}>
-                    <h3 style={{width: '100%'}}>{e.published ? <Link to={"/grille/"+e.id}>{e.title}</Link> : e.title} <Link to={"/grille/"+e.id+'/modifier'}><button class="float-right btn btn-primary">Modifier</button></Link></h3>
-                    <span>{e.width}x{e.height} {e.published && <span class="badge bg-danger">publié</span>}</span><br/>
+                    <h3 style={{width: '100%'}}>{e.published ? <Link to={"/grille/"+e.id}>{e.title}</Link> : e.title} <Link to={"/grille/"+e.id+'/modifier'}><button className="float-right btn btn-primary">Modifier</button></Link></h3>
+                    <span>{e.width}x{e.height} {e.published && <span className="badge bg-danger">publié</span>}</span><br/>
                     <span>Créée {(new Date(e.creation_date)).toLocaleDateString("fr-FR")}</span><br/>
                     <span>Modifiée {(new Date(e.modification_date)).toLocaleDateString("fr-FR")}</span>
                 </div>

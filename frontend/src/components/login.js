@@ -63,10 +63,10 @@ const Login = () => {
     return (
       <div style={{marginTop: '15px', marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
       {username && <div style={{textAlign:'right'}}>
-          <Link to="/"><button class="btn btn-secondary btn-sm">Index</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Quitter</button>&nbsp;
+          <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Quitter</button>&nbsp;
         </div>}
       {!username && (<div style={{textAlign:'right'}}>
-        <Link to="/"><button class="btn btn-secondary btn-sm">Index</button></Link> <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Connection</button>
+        <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Connection</button>
           &nbsp;
         </div>)}
       {!username && wantLogin && (<div>
