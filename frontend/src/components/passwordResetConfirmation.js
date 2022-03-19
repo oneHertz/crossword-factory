@@ -2,13 +2,15 @@ import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
 import Swal from 'sweetalert2'
 
-const Register = (props) => {
+import {useParams} from "react-router-dom";
+
+const Register = () => {
     const globalState = useGlobalState()
     const { username } = globalState.user
     const [pass, setPass] = React.useState()
     const [pass2, setPass2] = React.useState()
     const [errors, setErrors] = React.useState({})
-  
+    let { key } = useParams();
     React.useEffect(()=>{
         if (username) {
           window.location = '/'
@@ -17,7 +19,7 @@ const Register = (props) => {
   
     const onSubmit = async (e) => {
       e.preventDefault()
-      const [uid, token] = props.match.params.key.split(':')
+      const [uid, token] = key.split(':')
       const res = await fetch(process.env.REACT_APP_API_URL+'/auth/password/reset/confirm/', {
         method: 'POST',
         credentials: 'omit',
