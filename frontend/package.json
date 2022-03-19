@@ -13,6 +13,7 @@
     "react-router-dom": "^6.0.1",
     "react-scripts": "4.0.3",
     "react-to-print": "^2.14.0",
+    "sweetalert2": "^11.4.6",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

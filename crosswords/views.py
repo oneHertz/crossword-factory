@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from knox.models import AuthToken
 
-from rest_framework import generics, parsers
+from rest_framework import generics, parsers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -22,6 +22,8 @@ from crosswords.serializers import (
     LatestGridListSerializer,
     UserMainSerializer,
     UserInfoSerializer,
+    EmailSerializer,
+    ResendVerificationSerializer
 )
 
 
@@ -117,3 +119,34 @@ def check_grid_solution(request, uid):
     if grid.check_solution(submited_solution_hash):
         return Response({'is_ok': True, 'solution': grid.solution, 'width': grid.width, 'height': grid.height})
     return Response({'is_ok': False})
+
+
+
+
+class EmailsView(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = EmailSerializer
+
+    def get_queryset(self):
+        return self.request.user.emailaddress_set.all().order_by('-primary', '-verified', 'email')
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+
+class EmailDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = EmailSerializer
+    lookup_field = 'email'
+
+    def get_queryset(self):
+        return self.request.user.emailaddress_set.all()
+
+class ResendVerificationView(generics.GenericAPIView):
+    serializer_class = ResendVerificationSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

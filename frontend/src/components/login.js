@@ -63,7 +63,7 @@ const Login = () => {
     return (
       <div style={{marginTop: '15px', marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
       {username && <div style={{textAlign:'right'}}>
-          <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Quitter</button>&nbsp;
+          <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Deconnéction</button>&nbsp;
         </div>}
       {!username && (<div style={{textAlign:'right'}}>
         <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Connection</button>
@@ -94,6 +94,10 @@ const Login = () => {
               </div>
               <div className="modal-footer" style={{display:'block', justifyContent:'initial'}}>
                 <button type="submit" className="btn btn-danger btn-default pull-left" data-dismiss="modal" onClick={()=>setWantLogin(false)}><i className="fas fa-times"></i> Retour</button>
+                <div className="float-end">
+                  <p>Pas de compte? <Link to='/sign-up' onClick={()=>setWantLogin(false)}>Créer un compte</Link><br/>
+                  <Link to='/password-reset' onClick={()=>setWantLogin(false)}>Mot de passe oublié?</Link></p>
+                </div>
               </div>
             </div>
           </div>

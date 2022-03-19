@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
 
+from allauth.account.models import EmailAddress
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from crosswords.models import Grid
@@ -192,3 +193,68 @@ class UserMainSerializer(serializers.ModelSerializer):
     #def get_latest_routes(self, obj):
     #    return UserRouteListSerializer(instance=obj.routes.all()[:5], many=True, context=self.context).data
 
+
+class EmailSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        fields = ('email', 'primary', 'verified')
+        model = EmailAddress
+        read_only_fields = ('verified',)
+
+    def create(self, validated_data):
+        email = super(EmailSerializer, self).create(validated_data)
+        email.send_confirmation()
+        user = validated_data.get('user')
+        query = EmailAddress.objects.filter(
+            primary=True, user=user
+        )
+        if not query.exists():
+            email.set_as_primary()
+        return email
+
+    def update(self, instance, validated_data):
+        primary = validated_data.pop('primary', False)
+        instance = super(EmailSerializer, self).update(
+            instance, validated_data
+        )
+        if primary:
+            instance.set_as_primary()
+        return instance
+
+    def validate_email(self, email):
+        user, domain = email.rsplit("@", 1)
+        email = "@".join([user, domain.lower()])
+
+        if self.instance and email and self.instance.email != email:
+            raise serializers.ValidationError(
+                _(
+                    "Existing emails may not be edited. Create a new one "
+                    "instead."
+                )
+            )
+
+        return email
+
+    def validate_primary(self, primary):
+        # TODO: Setting 'is_primary' to 'False' should probably not be
+        #       allowed.
+        if primary and not (self.instance and self.instance.verified):
+            raise serializers.ValidationError(
+                _(
+                    "Unverified email addresses may not be used as the "
+                    "primary address."
+                )
+            )
+        return primary
+
+class ResendVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    def save(self):
+        try:
+            email = EmailAddress.objects.get(
+                email__iexact=self.validated_data['email'],
+                verified=False
+            )
+            email.send_confirmation()
+        except EmailAddress.DoesNotExist:
+            # email does not exists in db, just ignore
+            pass

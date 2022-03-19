@@ -29,20 +29,42 @@ ALLOWED_HOSTS = []
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+AUTHENTICATION_BACKENDS = ('utils.backends.CaseInsensitiveModelBackend', )
+
+SITE_ID = 1
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'utils.serializers.RegisterSerializer',
+}
+
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 'utils.serializers.CustomPasswordResetSerializer',
+}
+
+URL_FRONT = 'http://localhost:8080'
 # Application definition
 
 INSTALLED_APPS = [
+    'crosswords',
+
+    'corsheaders',
+    'knox',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework',
+    'rest_framework.authtoken',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'corsheaders',
-    'knox',
-    'crosswords',
+    'django.contrib.sites',
+
 ]
 
 MIDDLEWARE = [
@@ -228,6 +250,26 @@ SLUG_BLACKLIST = [
     'www3', 'www4', 'you', 'yourname', 'yourusername', 'zlib', 'traccar',
     'maps', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation'
 ]
+
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_BLACKLIST = SLUG_BLACKLIST
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_MIN_LENGTH = 2
+ACCOUNT_USERNAME_VALIDATORS = 'utils.validators.custom_username_validators'
+ACCOUNT_ADAPTER = 'utils.account_adapter.CustomAccountAdapter'
+CUSTOM_ACCOUNT_CONFIRM_EMAIL_URL = "/verify-email/{0}"
+
+EMAIL_HOST = 'smtp'
+EMAIL_PORT = 1025
+
+OLD_PASSWORD_FIELD_ENABLED = True
+
+REST_KNOX = {
+  'TOKEN_TTL': None,
+}
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 try:
     from .local_settings import *
