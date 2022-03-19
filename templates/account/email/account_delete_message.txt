@@ -1,0 +1,13 @@
+{% load i18n %}{% autoescape off %}
+{% blocktrans with site_name=current_site.name  %}Vous recevez ce message car vous avez requis la suppression  de votre compte du site {{ site_name }}.{% endblocktrans %}
+
+{% trans "Veuillez suivre le lien suivant pour confirmer votre souhait:" %}
+{% block reset_link %}
+{{ account_deletion_url }}
+{% endblock %}
+
+{% trans "Desolé de vous voir partir!" %}
+
+{% blocktrans with site_name=current_site.name %}L'équipe du site {{ site_name }}{% endblocktrans %}
+
+{% endautoescape %}
