@@ -1,23 +1,23 @@
 import React from 'react'
 import Swal from 'sweetalert2'
-
+import {useParams} from "react-router-dom";
 const VerifyEmail = ({match}) => {
     const [verified, setVerified] = React.useState(false)
     const [errors, setErrors] = React.useState({})
 
     const [email, setEmail] = React.useState()
     const [sent, setSent] = React.useState()
-
+    let { key } = useParams();
     React.useEffect(()=>{
         (async () => {
-            if(match.params.key) {
+            if(key) {
                 const res = await fetch(process.env.REACT_APP_API_URL + '/auth/registration/verify-email/', {
                     method: 'POST',
                     credentials: 'omit',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({key: match.params.key})
+                    body: JSON.stringify({key})
                 })
                 if (res.status === 200) {
                     setVerified(true)
@@ -35,7 +35,7 @@ const VerifyEmail = ({match}) => {
                 }
             }
         })()
-    }, [match])
+    }, [key])
 
     const onSubmitResend = async (e) => {
         e.preventDefault()
