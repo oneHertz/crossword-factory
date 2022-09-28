@@ -9,7 +9,7 @@ const Home = () => {
     const { username } = globalState.user
     return (<>
         <Helmet>
-            <title>Mots croisés</title>
+            <title>Mots croisés | Verbicruciste.fr</title>
         </Helmet>
 
         <div className="container main-container">

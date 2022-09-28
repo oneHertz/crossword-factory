@@ -61,6 +61,7 @@ const Login = () => {
       window.location = "/"
     }
     return (
+      <div>
       <div style={{marginTop: '15px', marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
       {username && <div style={{textAlign:'right'}}>
           <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Deconnéction</button>&nbsp;
@@ -104,6 +105,8 @@ const Login = () => {
         </div>
       </div>)
       }
+      </div>
+      <center><h1>Verbicruciste.fr</h1></center>
       </div>
     )
   }
