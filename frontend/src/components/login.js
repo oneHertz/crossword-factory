@@ -82,11 +82,11 @@ const Login = () => {
                     <div className="alert alert-danger" role="alert" dangerouslySetInnerHTML={{__html: e}}></div>
                 )}
                 <form onSubmit={onLogin}>
-                  <div className="form-group">
+                  <div className="form-group mb-3">
                     <label htmlFor="username"><i className="fas fa-user"></i> Nom d'utilisateur</label>
                     <input onChange={(e)=>{setLogin(e.target.value)}} type="text" className="form-control" id="username" name="username" placeholder="Nom d'utilisateur"/>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group mb-3">
                     <label htmlFor="password"><i className="fas fa-key"></i> Mot de passe</label>
                     <input onChange={(e)=>{setPass(e.target.value)}} type="password" className="form-control" id="password" name="password" placeholder="Mot de passe"/>
                   </div>

@@ -48,21 +48,21 @@ const PasswordChange = (props) => {
                 </div>
             )}
             <form onSubmit={onSubmit}>
-            <div className="form-group">
+            <div className="form-group mb-3">
                 <label htmlFor="oldPassword"><i className="fas fa-key"></i> Mot de passe actuel</label>
                 <input onChange={(e)=>{setOldPass(e.target.value)}} type="password" className={"form-control" + (errors.old_password ? ' is-invalid' : '')} id="password" name="password" placeholder="Mot de passe actuel"/>
                 {errors.old_password && (<div className="invalid-feedback">
                     {errors.old_password}
                 </div>)}
             </div>
-            <div className="form-group">
+            <div className="form-group mb-3">
                 <label htmlFor="password"><i className="fas fa-key"></i> Nouveau mot de passe</label>
                 <input onChange={(e)=>{setPass(e.target.value)}} type="password" className={"form-control" + (errors.new_password1 ? ' is-invalid' : '')} id="newPassword" name="newPassword" placeholder="Nouveau mot de passe"/>
                 {errors.new_password1 && (<div className="invalid-feedback">
                     {errors.new_password1}
                 </div>)}
             </div>
-            <div className="form-group">
+            <div className="form-group mb-3">
                 <label htmlFor="passwordRepeat"><i className="fas fa-key"></i> Confirmation du nouveau mot de passe</label>
                 <input onChange={(e)=>{setPass2(e.target.value)}} type="password" className={"form-control" + (errors.new_password2 ? ' is-invalid' : '')} id="newPasswordRepeat" name="newPasswordRepeat" placeholder="Confirmation du nouveau mot de passe"/>
                 {errors.new_password2 && (<div className="invalid-feedback">

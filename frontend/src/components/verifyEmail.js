@@ -61,7 +61,7 @@ const VerifyEmail = ({}) => {
             )}
             <h3>Reenvoyer email de vérification</h3>
             <form onSubmit={onSubmitResend}>
-            <div className={"form-group"}>
+            <div className="form-group mb-3">
                 <label htmlFor="email"><i className="fas fa-at"></i> Email</label>
                 <input onChange={(e)=>{setEmail(e.target.value)}} type="email" className={"form-control"} id="email" name="email" placeholder="Email"/>
             </div>

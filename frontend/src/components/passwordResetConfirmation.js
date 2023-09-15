@@ -50,14 +50,14 @@ const Register = () => {
                 </div>
             )}
             <form onSubmit={onSubmit}>
-            <div className="form-group">
+            <div className="form-group mb-3">
                 <label htmlFor="password"><i className="fas fa-key"></i> Nouveau mot de passe</label>
                 <input onChange={(e)=>{setPass(e.target.value)}} type="password" className={"form-control" + (errors.new_password1 ? ' is-invalid' : '')} id="password" name="password" placeholder="Nouveau mot de passe"/>
                 {errors.new_password1 && (<div className="invalid-feedback">
                     {errors.new_password1}
                 </div>)}
             </div>
-            <div className="form-group">
+            <div className="form-group mb-3">
                 <label htmlFor="passwordRepeat"><i className="fas fa-key"></i> Confirmation du nouveau mot de passe</label>
                 <input onChange={(e)=>{setPass2(e.target.value)}} type="password" className={"form-control" + (errors.new_password2 ? ' is-invalid' : '')} id="passwordRepeat" name="passwordRepeat" placeholder="Confirmation du nouveau mot de passe"/>
                 {errors.new_password2 && (<div className="invalid-feedback">

@@ -39,7 +39,7 @@ const PasswordReset = () => {
                     {e}
                 </div>
             )}
-            <div className={"form-group"}>
+            <div className="form-group mb-3">
                 <label htmlFor="email"><i className="fas fa-at"></i> Adresse éléctronique</label>
                 <input onChange={(e)=>{setEmail(e.target.value)}} type="email" className={"form-control" + (errors.email ? ' is-invalid' : '')} id="email" name="email" placeholder="Adresse éléctronique"/>
                 {errors.email && (<div className="invalid-feedback">

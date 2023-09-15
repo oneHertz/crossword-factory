@@ -140,7 +140,7 @@ const EmailsList = () => {
       <div>
         <div>
           <form className="form-group" onSubmit={addEmail}>
-            <div className="form-group">
+            <div className="form-group mb-3">
               <label htmlFor="staticEmail" className="sr-only">Email</label>
               <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className={"form-control" + (errorsAdding.email ? ' is-invalid' : '')} id="staticEmail" placeholder="email@exemple.com" required />
               {errorsAdding.email && (<span className="invalid-feedback">
