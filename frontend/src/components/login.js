@@ -61,6 +61,10 @@ const Login = () => {
       window.location = "/"
     }
     return (
+      <>
+      <div className="container-fluid top-page">
+      <center style={{paddingTop: "1em"}}><h1><a href="/" style={{fontWeight: "bold", textDecoration: "none", color: "#22f"}}>Verbicruciste.fr</a></h1></center>
+      </div>
       <div>
       <div style={{marginTop: '15px', marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
       {username && <div style={{textAlign:'right'}}>
@@ -106,8 +110,8 @@ const Login = () => {
       </div>)
       }
       </div>
-      <center><h1>Verbicruciste.fr</h1></center>
       </div>
+      </>
     )
   }
   
