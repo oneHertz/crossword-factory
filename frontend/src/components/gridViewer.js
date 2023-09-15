@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import useGlobalState from '../utils/useGlobalState'
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from 'react-to-print';
 import ShareModal from './shareModal';
-const pkg = require('../../package.json')
 
 function GridEditor() {
-    const globalState = useGlobalState()
     const [solutions, setSolutions] = useState([])
     const [title, setTitle] = useState('')
     const [selectedBlock, setSelectedBlock] = useState(null)
@@ -16,7 +13,6 @@ function GridEditor() {
     const [maxHighlight, setMaxHighlight] = useState(null)
     const [def, setDef] = useState([[], []])
     const [author, setAuthor] = useState(null);
-    const { username, api_token } = globalState.user
     const {uid: gridId} = useParams();
     const componentRef = React.useRef();
     const aaa = React.useRef([]);
@@ -24,6 +20,8 @@ function GridEditor() {
     const print = useReactToPrint({
       content: () => componentRef.current,
     });
+
+    useEffect(()=>{
 
     const loadGrid = async (id) => {
         try {
@@ -56,8 +54,6 @@ function GridEditor() {
             window.location = '/'
         }
     }
-
-    useEffect(()=>{
         if (gridId) {
             (async () => (await loadGrid(gridId)))()
         }
@@ -100,7 +96,7 @@ function GridEditor() {
     React.useEffect(()=>{
         if(selectedBlock)
             aaa.current[selectedBlock[0]+'_'+selectedBlock[1]].focus()
-    }, [selectedBlock, aaa.current])
+    }, [selectedBlock])
 
     const switchWritingDir = (i, j) => {
         let wd = writingDirection
@@ -126,16 +122,17 @@ function GridEditor() {
             setMaxHighlight(maxH)
         }
         if (wd === 'v') {
-            var minH = i
-            while (minH >= 0 && solutions[minH][j] !== ' ') {
-                minH -= 1
+            var minV = i
+            while (minV >= 0 && solutions[minV][j] !== ' ') {
+                minV -= 1
             }
-            setMinHighlight(minH)
-            var maxH = i
-            while (maxH < solutions.length && solutions[maxH][j] !== ' ') {
-                maxH += 1
+            setMinHighlight(minV)
+            var maxV = i
+            while (maxV < solutions.length && solutions[maxV][j] !== ' ') {
+                maxV += 1
             }
-            setMaxHighlight(maxH)
+            console.log(maxV)
+            setMaxHighlight(maxV)
         }
         setWritingDirection(wd)
         
@@ -143,44 +140,18 @@ function GridEditor() {
     const selectBlock = (i, j) => {
         if (i === null) {
             setSelectedBlock(null)
-            document.activeElement.blur()
             return
         }
-        if (solutions[i][j] !== ' ') {
-            document.activeElement.setSelectionRange(0, document.activeElement.value.length)
-            let wd = writingDirection
-            setSelectedBlock([i, j])
-            if (wd === 'h') {
-                var minH = j
-                while (minH >= 0 && solutions[i][minH] !== ' ') {
-                    minH -= 1
-                }
-                setMinHighlight(minH)
-                var maxH = j
-                while (maxH < solutions[0].length && solutions[i][maxH] !== ' ') {
-                    maxH += 1
-                }
-                setMaxHighlight(maxH)
-            }
-            if (wd === 'v') {
-                var minH = i
-                while (minH >= 0 && solutions[minH][j] !== ' ') {
-                    minH -= 1
-                }
-                setMinHighlight(minH)
-                var maxH = i
-                while (maxH < solutions.length && solutions[maxH][j] !== ' ') {
-                    maxH += 1
-                }
-                setMaxHighlight(maxH)
-            }
-        }
+        setSelectedBlock([i, j])
     }
 
     const setSolutionXY = (i, j, e) => {
         e.persist();
         e.preventDefault()
         const char = e.key.toLowerCase()
+        if (!selectedBlock || (selectedBlock[0] !== i || selectedBlock[1] !== j)) {
+            return
+        }
         if (char.length === 1 && /[a-z-]/.test(char)){
             const newSol = solutions;
             newSol[i][j] = char.toUpperCase()
@@ -264,26 +235,25 @@ function GridEditor() {
             alert('Une erreur est survenue...')
         }
     }
-
     return (
         <div className="container main-container">
-            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><h1>{title} <button onClick={share} className="btn btn-info inv">Partager</button></h1><table className="t">
+            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><div className="mb-3"><h1 className="mb-0">{title}</h1><span style={{fontSize: "0.7em"}}>par {author.first_name} {author.last_name}</span></div><button onClick={share} className="btn btn-info inv mb-1">Partager</button><br/><table className="t mt-4"><tbody>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td className={'box ' + (val === ' ' ? 'blackBox': '')}>
                         {val !== ' ' && (
-                        <input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} onMouseDown={()=>{switchWritingDir(i, j)}} onFocus={() => selectBlock(i, j)} className='iBox' ref={(input) => { aaa.current[i+'_'+j] = input }}  style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0] && j > minHighlight && j < maxHighlight)||(writingDirection === 'v' && j === selectedBlock[1] && i > minHighlight && i < maxHighlight)))?'#f99':(val === ' ' ? 'black' : 'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
+                        <input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} onMouseDown={()=>{switchWritingDir(i, j);selectBlock(i, j)}} className='iBox' ref={(input) => { aaa.current[i+'_'+j] = input }}  style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0] && j > minHighlight && j < maxHighlight)||(writingDirection === 'v' && j === selectedBlock[1] && i > minHighlight && i < maxHighlight)))?'#f99':(val === ' ' ? 'black' : 'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
                         )}
                     </td>))}</tr>
                 ))
                 }
-                </table>
+                </tbody></table>
                 <p className='inv'>Cliquer sur une case et taper la lettre désiré, Retour arrière pour re-initialiser la case.</p>
                 {isGridFull() && <p><button className="btn btn-secondary inv" onClick={checkSolution}>Verifier votre solution</button></p>}
                 <div className='d'>
                 <h3>Définitions</h3>
                 <div className="row">
-                    <div className="col-6" style={{borderRight: '1px solid #000'}}>
+                    <div className="col-12 col-md-6" style={{borderRight: '1px solid #000'}}>
                         <h4>Horizontalement</h4>
                         <div>
                         {def[0].map((l, i) => (
@@ -292,7 +262,7 @@ function GridEditor() {
                         </div>
                     </div>
 
-                    <div className="col-6">
+                    <div className="col-12 col-md-6">
                         <h4>Verticalement</h4>
                         <div>
                         {def[1].map((l, i) => (

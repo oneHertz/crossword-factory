@@ -66,9 +66,10 @@ const EmailItem = (props) => {
   }
 
   return (
+  <>
   <div className="row" style={{marginBottom: '1em'}}>
     <div className="col-sm">
-      <h4><span className="badge bg-secondary">{email}</span>{primary && <> <span className="badge bg-success">Principal</span></>}{verified && <> <span className="badge bg-primary">Verifié</span></>}{resent && <> <span className="badge bg-warning">Verification renvoyée</span></>}</h4>
+      <h4><span className="badge bg-secondary mb-1">{email}</span>{primary && <> <span className="badge bg-success">Principal</span></>}{verified && <> <span className="badge bg-primary">Verifié</span></>}{resent && <> <span className="badge bg-warning">Verification renvoyée</span></>}</h4>
     </div>
     <div className="col-sm">
       { !primary && verified && <><button onClick={makePrimary} className="btn btn-info"><i className="fas fa-star"></i> Faire principal</button> </>}
@@ -76,7 +77,7 @@ const EmailItem = (props) => {
       { !primary && <button onClick={onDelete} className="btn btn-danger"><i className="fa fa-trash"></i> Supprimer</button>}
     </div>
       {verified}
-  </div>);
+  </div><hr/></>);
 }
 
 const EmailsList = () => {
@@ -135,8 +136,7 @@ const EmailsList = () => {
           <EmailItem  key={e.email} email={e.email} verified={e.verified} primary={e.primary} onUpdate={fetchEmails}/>
         )
       )}
-      <hr/>
-      <h4>Enregistrer une nouvelle adresse</h4>
+      <h5>Enregistrer une nouvelle adresse</h5>
       <div>
         <div>
           <form className="form-group" onSubmit={addEmail}>

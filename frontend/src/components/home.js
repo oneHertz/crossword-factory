@@ -14,15 +14,12 @@ const Home = () => {
 
         <div className="container main-container">
             <div style={{textAlign:'center'}} >
-            {username && <><hr/>
-            <Link to="/nouvelle-grille"><button className="btn btn-primary"><i className="fas fa-plus"></i> Creer une nouvelle grille</button></Link><> </>
-            <Link to='/mes-grilles/'><button className="btn btn-primary"><i className="fas fa-link"></i> Vos grilles</button></Link><br/><br/>
-            <Link to='/settings/'><button className="btn btn-primary"><i className="fas fa-link"></i> Mon compte</button></Link>
+            {username && <>
+            <Link to="/nouvelle-grille"><button className="btn btn-primary mb-3"><i className="fas fa-plus"></i> + Creer une nouvelle grille</button></Link><br/>
             </>}
             {!username && <><hr/>
                 <span>Connectez vous pour créer de nouvelles grilles ou voir vos grilles sauvegardées sur le site.</span>
             </>}
-            <hr/>
             {/*<LatestRoutes/>*/}
             </div>
         </div>

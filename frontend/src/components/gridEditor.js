@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import useGlobalState from '../utils/useGlobalState'
 import { useParams } from "react-router-dom";
 import ShareModal from './shareModal';
-const pkg = require('../../package.json')
 
 function GridEditor(props) {
     const globalState = useGlobalState()
@@ -13,46 +12,45 @@ function GridEditor(props) {
     const [title, setTitle] = useState('')
     const [pub, setPub] = useState(false)
     const [def, setDef] = useState([[], []])
-    const { username, api_token } = globalState.user
+    const { api_token } = globalState.user
     const [writingDirection, setWritingDirection] = useState('h')
     const {uid: gridId} = useParams();
     const aaa = React.useRef([]);
 
-    const loadGrid = async (id) => {
-        try {
-            const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id, {
-                method: 'GET',
-                credentials: 'omit',
-                headers: {
-                    'Authorization': 'Token ' + api_token,
-                    'Content-Type': 'application/json'
-                }
-            })
-            const d = await r.json()
-            setDimensions([d.width, d.height])
-            setTitle(d.title)
-            const a = []
-            for (let j=0; j< d.height; j++){
-                a.push([])
-                for (let i=0; i< d.width; i++){
-                    const ch = d.solution[j*d.width+i]
-                    a[j].push(ch === '_' ? '': ch.toUpperCase())
-                }
-            }
-            setSolutions(a)
-            setDef(d.definitions)
-            setPub(d.published)
-            setDimensionsFrozen(true)
-        } catch(e) {
-            window.location = '/'
-        }
-    }
-
     useEffect(()=>{
+        const loadGrid = async (id) => {
+            try {
+                const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id, {
+                    method: 'GET',
+                    credentials: 'omit',
+                    headers: {
+                        'Authorization': 'Token ' + api_token,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                const d = await r.json()
+                setDimensions([d.width, d.height])
+                setTitle(d.title)
+                const a = []
+                for (let j=0; j< d.height; j++){
+                    a.push([])
+                    for (let i=0; i< d.width; i++){
+                        const ch = d.solution[j*d.width+i]
+                        a[j].push(ch === '_' ? '': ch.toUpperCase())
+                    }
+                }
+                setSolutions(a)
+                setDef(d.definitions)
+                setPub(d.published)
+                setDimensionsFrozen(true)
+            } catch(e) {
+                window.location = '/'
+            }
+        }
         if (gridId) {
             (async () => (await loadGrid(gridId)))()
-        }  
-    }, [gridId])
+        }
+    }, [gridId, api_token])
 
     const onChangeWidth = (ev) => {
         setDimensions([ev.target.value, dimensions[1]])
@@ -102,7 +100,7 @@ function GridEditor(props) {
     React.useEffect(()=>{
         if(selectedBlock)
             aaa.current[selectedBlock[0]+'_'+selectedBlock[1]].focus()
-    }, [selectedBlock, aaa.current])
+    }, [selectedBlock])
 
     const switchWritingDir = (i, j) => {
         let wd = writingDirection
@@ -116,15 +114,13 @@ function GridEditor(props) {
             wd = 'h'  
         }
         setWritingDirection(wd)
-
     }
 
     const selectBlock = (i, j) => {
-        if (i=== null) {
+        if (i === null) {
             setSelectedBlock(null)
             return
         }
-        document.activeElement.setSelectionRange(0, document.activeElement.value.length)
         setSelectedBlock([i, j])
     }
 
@@ -132,20 +128,22 @@ function GridEditor(props) {
         e.persist();
         e.preventDefault()
         const char = e.key.toLowerCase()
+        if (!selectedBlock || (selectedBlock[0] !== i || selectedBlock[1] !== j)) {
+            return
+        }
         if (char.length === 1 && /[a-z -]/.test(char)){
             const newSol = solutions;
             newSol[i][j] = char.toUpperCase()
             e.target.value = char.toUpperCase()
             setSolutions(newSol)
             selectNextBlock(i, j)
-            
         }
         if(char === 'backspace' || e.keyCode === 8){
             const newSol = solutions;
             newSol[i][j] = ''
             e.target.value = ''
             setSolutions(newSol)
-            selectBlock = (i, j)
+            setSelectedBlock([i, j])
         }
     }
 
@@ -331,19 +329,19 @@ function GridEditor(props) {
             
             {!dimensionsFrozen && (<>
                 <h3>Dimensions</h3>
-                <label for="width">Largeur</label>
+                <label htmlFor="width">Largeur</label>
                 <input name="width" type="number" min="1" onChange={onChangeWidth} defaultValue={dimensions[0]}></input>
-                <label for="height">Hauteur</label>
+                <label htmlFor="height">Hauteur</label>
                 <input name="height" type="number" min="1" onChange={onChangeHeight} defaultValue={dimensions[1]}></input>
-                <button className="btn btn-primary" onClick={freezeDimensions}>Continuer</button>
+                <button className="ms-1 btn btn-primary" onClick={freezeDimensions}>Continuer</button>
             </>)}
-            {dimensionsFrozen && (<><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input>{pub && (<> <span className="badge bg-danger">publié</span> <button onClick={share} className="btn btn-info inv">Partager la grille</button> <button onClick={shareSolution} className="btn btn-info inv">Partager la solution</button></>)}<table>
+            {dimensionsFrozen && (<><div className="mb-3"><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input> {pub && <span className="ms-1 badge bg-danger">publié</span>}</div>{pub && (<><button onClick={share} className="btn btn-info inv mb-1">Partager la grille</button> <button onClick={shareSolution} className="btn btn-info inv mb-1">Partager la solution</button></>)}<table className="mt-3"><tbody>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
-                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} ref={(input) => { aaa.current[i+'_'+j] = input }}   onMouseDown={()=>{switchWritingDir(i, j)}} onFocus={() => selectBlock(i, j)} style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0])||(writingDirection === 'v' && j === selectedBlock[1])))?'#f99':'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
+                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input onMouseDown={() => {switchWritingDir(i, j);selectBlock(i, j)}} type='text' key={i+'_'+j} id={'square_'+i+'_'+j} ref={(input) => { aaa.current[i+'_'+j] = input }} style={{userSelect: 'none',outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0])||(writingDirection === 'v' && j === selectedBlock[1])))?'#f99':'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
                 ))
                 }
-                </table>
+                </tbody></table>
                 <p>Cliquer sur une case et taper la lettre désiré, Espace pour noircire la case, Retour arrière pour re-initialiser la case. Une fois la grille remplie vous aurez la posibilité de publier la grille.</p>
                 <div style={{marginTop: '15px'}}>
                     <button className="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>

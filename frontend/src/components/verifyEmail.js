@@ -1,7 +1,8 @@
 import React from 'react'
 import Swal from 'sweetalert2'
 import {useParams} from "react-router-dom";
-const VerifyEmail = ({}) => {
+
+const VerifyEmail = () => {
     const [verified, setVerified] = React.useState(false)
     const [errors, setErrors] = React.useState({})
 

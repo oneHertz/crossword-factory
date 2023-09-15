@@ -22,7 +22,7 @@ const ShareModal = (props) => {
             <div className="modal-body" style={{padding:'40px 50px'}}>
               <form>
                 <div className="form-row align-items-center">
-                  <div className="col-auto">
+                  <div className="col-auto mb-3">
                     <label htmlFor="url" className="sr-only"><i className="fas fa-link"></i> URL</label>
                     <input ref={inputEl} type="text" className="form-control" id="url" name="url" placeholder="URL" readOnly value={props.url}/>
                   </div>
