@@ -23,5 +23,9 @@ urlpatterns = [
     path('drf-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/', include('crosswords.urls')),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    re_path(r'^password-reset-confirmation/(?P<uidb64>[0-9A-Za-z_\-]+):(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
+        TemplateView.as_view(template_name="base.html"),
+        name='password_reset_confirm'
+    ),
     re_path(r'.+', TemplateView.as_view(template_name='base.html'), name='catch_all')
 ]
