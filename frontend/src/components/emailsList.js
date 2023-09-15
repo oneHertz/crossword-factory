@@ -68,12 +68,12 @@ const EmailItem = (props) => {
   return (
   <div className="row" style={{marginBottom: '1em'}}>
     <div className="col-sm">
-      <h4><span className="badge bg-secondary">{email}</span>{primary && <> <span className="badge bg-success">Primary</span></>}{verified && <> <span className="badge bg-primary">Verified</span></>}{resent && <> <span className="badge bg-warning">Verification resent</span></>}</h4>
+      <h4><span className="badge bg-secondary">{email}</span>{primary && <> <span className="badge bg-success">Principal</span></>}{verified && <> <span className="badge bg-primary">Verifié</span></>}{resent && <> <span className="badge bg-warning">Verification renvoyée</span></>}</h4>
     </div>
     <div className="col-sm">
-      { !primary && verified && <><button onClick={makePrimary} className="btn btn-info"><i className="fas fa-star"></i> Make primary</button> </>}
-      { !verified && !resent && <><button  onClick={onResend} className="btn btn-warning"><i className="fas fa-paper-plane"></i> Resend Verification</button> </>}
-      { !primary && <button onClick={onDelete} className="btn btn-danger"><i className="fa fa-trash"></i> Delete</button>}
+      { !primary && verified && <><button onClick={makePrimary} className="btn btn-info"><i className="fas fa-star"></i> Faire principal</button> </>}
+      { !verified && !resent && <><button  onClick={onResend} className="btn btn-warning"><i className="fas fa-paper-plane"></i> Renvoyer verification</button> </>}
+      { !primary && <button onClick={onDelete} className="btn btn-danger"><i className="fa fa-trash"></i> Supprimer</button>}
     </div>
       {verified}
   </div>);
