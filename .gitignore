@@ -24,4 +24,4 @@ var/*
 node_modules/*
 cypress/screenshots/*
 cypress/videos/*
-
+.DS_Store
