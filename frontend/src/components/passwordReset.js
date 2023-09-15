@@ -50,7 +50,7 @@ const PasswordReset = () => {
         </form></>}
         {sent && (
             <div className="alert alert-success" role="alert">
-            Succés! On vous a envoyé un message éléctronique!
+            Succés! Dans le cas où l'on aurait trouvé votre adresse email dans notre base de données un message électronique vous est envoyé!
             </div>)
         }
       </div>
