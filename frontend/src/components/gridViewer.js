@@ -13,6 +13,7 @@ function GridEditor() {
     const [maxHighlight, setMaxHighlight] = useState(null)
     const [def, setDef] = useState([[], []])
     const [author, setAuthor] = useState(null);
+    const [sharedUrl, setSharedUrl] = useState();
     const {uid: gridId} = useParams();
     const componentRef = React.useRef();
     const aaa = React.useRef([]);
@@ -23,16 +24,28 @@ function GridEditor() {
 
     useEffect(()=>{
 
-    const loadGrid = async (id) => {
+      const loadGrid = async (id) => {
         try {
             const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id)
             const d = await r.json()
             setTitle(d.title)
             setAuthor(d.author)
             let savedGrid = ''
+            const { hash } = window.location;
+            const data = new URLSearchParams(hash.slice(1));
             try {
-                savedGrid = JSON.parse(window.localStorage.getItem(gridId)).map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('');
-            } catch(e) {}
+                window.location.hash = ""
+                const solutionB64 = data.get('s');
+                if (solutionB64) {
+                    savedGrid = JSON.parse(atob(solutionB64)).map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('');
+                }
+                
+            } catch(e) {console.log(e)}
+            if (!savedGrid) {
+                try {
+                    savedGrid = JSON.parse(window.localStorage.getItem(gridId)).map(l=>l.map(c=> (c==='' ? '_' : (c === ' ' ? '#' : c.toLowerCase()))).join('')).join('');
+                } catch(e) {}
+            }
             const a = []
             for (let j=0; j< d.height; j++){
                 a.push([])
@@ -53,10 +66,11 @@ function GridEditor() {
         } catch(e) {
             window.location = '/'
         }
-    }
-        if (gridId) {
-            (async () => (await loadGrid(gridId)))()
-        }
+      }
+
+      if (gridId) {
+        (async () => (await loadGrid(gridId)))()
+      }
     }, [gridId])
 
 
@@ -191,10 +205,15 @@ function GridEditor() {
     }
 
     const [shareModalOpen, setShareModalOpen] = useState(false)
-    const share = () => {
+    const share = (url2share) => {
+      if (!url2share) {
+        setSharedUrl(document.location.href)
+      } else {
+        setSharedUrl(url2share)
+      }
       if(webShareApiAvailable) {
         try {
-          navigator.share({url: document.location.href}).then(()=>{}).catch(()=>{});
+          navigator.share({url: sharedUrl}).then(()=>{}).catch(()=>{});
         } catch (e) {}
       } else {
         setShareModalOpen(true)
@@ -204,6 +223,17 @@ function GridEditor() {
     const isGridFull = () => {
         return solutions.map(l=>l.map(c=> c).join('')).join('').length === solutions.length*solutions[0].length
     }
+
+    const copyState = async () => {
+        const txt = JSON.stringify(solutions)
+        let url2share = document.location.href;
+        if (!url2share.endsWith("#")) {
+            url2share += "#"
+        }
+        url2share += ("s=" + btoa(txt))
+        share(url2share)
+    }
+
     const checkSolution = async () => {
         const { createHash } = await import('crypto');
         const txt = solutions.map(l=>l.map(c=>c.toLowerCase()).join('')).join('')
@@ -237,12 +267,12 @@ function GridEditor() {
     }
     return (
         <div className="container main-container">
-            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><div className="mb-3"><h1 className="mb-0">{title}</h1><span style={{fontSize: "0.7em"}}>par {author.first_name} {author.last_name}</span></div><button onClick={share} className="btn btn-info inv mb-1">Partager</button><br/><table className="t mt-4"><tbody>
-                <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
+            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><div className="mb-3"><h1 className="mb-0">{title}</h1><span style={{fontSize: "0.7em"}}>par {author.first_name} {author.last_name}</span></div><button onClick={share} className="btn btn-info inv mb-1">Partager la grille</button><br/><button className="btn btn-success inv mb-1" onClick={()=>copyState()}>Partager mes progrès</button><br/><table className="t mt-4"><tbody>
+                <tr><td> </td>{solutions[0].map((val, j)=>(<td key={'colh' + j} style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
-                    <tr><td>{i+1}.</td>{line.map((val, j)=>(<td className={'box ' + (val === ' ' ? 'blackBox': '')}>
+                    <tr key={"line_" + i}><td>{i+1}.</td>{line.map((val, j)=>(<td key={i + ' ' + j} className={'box ' + (val === ' ' ? 'blackBox': '')}>
                         {val !== ' ' && (
-                        <input type='text' key={i+'_'+j} id={'square_'+i+'_'+j} onMouseDown={()=>{switchWritingDir(i, j);selectBlock(i, j)}} className='iBox' ref={(input) => { aaa.current[i+'_'+j] = input }}  style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0] && j > minHighlight && j < maxHighlight)||(writingDirection === 'v' && j === selectedBlock[1] && i > minHighlight && i < maxHighlight)))?'#f99':(val === ' ' ? 'black' : 'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
+                        <input type='text' id={'square_'+i+'_'+j} onMouseDown={()=>{switchWritingDir(i, j);selectBlock(i, j)}} className='iBox' ref={(input) => { aaa.current[i+'_'+j] = input }}  style={{outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0] && j > minHighlight && j < maxHighlight)||(writingDirection === 'v' && j === selectedBlock[1] && i > minHighlight && i < maxHighlight)))?'#f99':(val === ' ' ? 'black' : 'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e) => onSquareChanged(i, j, e)}/>
                         )}
                     </td>))}</tr>
                 ))
@@ -257,7 +287,7 @@ function GridEditor() {
                         <h4>Horizontalement</h4>
                         <div>
                         {def[0].map((l, i) => (
-                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><span style={(selectedBlock && writingDirection === 'h' && i === selectedBlock[0]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
+                            <div key={"hdef" + i} style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{i+1}. </span><span style={(selectedBlock && writingDirection === 'h' && i === selectedBlock[0]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
                         ))}
                         </div>
                     </div>
@@ -266,7 +296,7 @@ function GridEditor() {
                         <h4>Verticalement</h4>
                         <div>
                         {def[1].map((l, i) => (
-                            <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><span style={(selectedBlock && writingDirection === 'v' && i === selectedBlock[1]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
+                            <div key={"vdef" + i} style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><span style={(selectedBlock && writingDirection === 'v' && i === selectedBlock[1]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
                         ))}
                         </div>
                     </div>
@@ -274,8 +304,8 @@ function GridEditor() {
                 </div>
             </div>)
             }
-            <button className="btn btn-primary" onClick={print}>Imprimer</button>
-            {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
+            <button className="btn btn-primary mb-1" onClick={print}>Imprimer</button>
+            {shareModalOpen && <ShareModal url={sharedUrl} onClose={()=>setShareModalOpen(false)}/> }
         </div>
     )
 }
