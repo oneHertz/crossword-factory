@@ -207,7 +207,8 @@ function GridEditor() {
     const [shareModalOpen, setShareModalOpen] = useState(false)
     const share = (url2share) => {
       if (!url2share) {
-        setSharedUrl(document.location.href)
+        console.log(document.location.href.toString())
+        setSharedUrl(document.location.href.toString())
       } else {
         setSharedUrl(url2share)
       }
@@ -267,7 +268,7 @@ function GridEditor() {
     }
     return (
         <div className="container main-container">
-            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><div className="mb-3"><h1 className="mb-0">{title}</h1><span style={{fontSize: "0.7em"}}>par {author.first_name} {author.last_name}</span></div><button onClick={share} className="btn btn-info inv mb-1">Partager la grille</button><br/><button className="btn btn-success inv mb-1" onClick={()=>copyState()}>Partager mes progrès</button><br/><table className="t mt-4"><tbody>
+            { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><div className="mb-3"><h1 className="mb-0">{title}</h1><span style={{fontSize: "0.7em"}}>par {author.first_name} {author.last_name}</span></div><button onClick={()=>share()} className="btn btn-info inv mb-1">Partager la grille</button><br/><button className="btn btn-success inv mb-1" onClick={()=>copyState()}>Partager mes progrès</button><br/><table className="t mt-4"><tbody>
                 <tr><td> </td>{solutions[0].map((val, j)=>(<td key={'colh' + j} style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr key={"line_" + i}><td>{i+1}.</td>{line.map((val, j)=>(<td key={i + ' ' + j} className={'box ' + (val === ' ' ? 'blackBox': '')}>
