@@ -342,7 +342,7 @@ function GridEditor(props) {
                 ))
                 }
                 </tbody></table>
-                <p>Cliquer sur une case et taper la lettre désiré, Espace pour noircire la case, Retour arrière pour re-initialiser la case. Une fois la grille remplie vous aurez la posibilité de publier la grille.</p>
+                <p>Cliquer sur une case et tapez la lettre désirée, Espace pour noircir la case, Retour arrière pour ré-initialiser la case. Une fois la grille remplie vous aurez la posibilité de publier la grille.</p>
                 <div style={{marginTop: '15px'}}>
                     <button className="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
                 </div>
