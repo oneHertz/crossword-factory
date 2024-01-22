@@ -278,7 +278,7 @@ function GridEditor() {
                 ))
                 }
                 </tbody></table>
-                <p className='inv'>Cliquer sur une case et tapez la lettre désirée, Retour arrière pour ré-initialiser la case.</p>
+                <p className='inv'>Cliquez sur une case et tapez la lettre désirée, Retour arrière pour ré-initialiser la case.</p>
                 {isGridFull() && <p><button className="btn btn-secondary inv" onClick={checkSolution}>Verifier votre solution</button></p>}
                 <div className='d'>
                 <h3>Définitions</h3>
