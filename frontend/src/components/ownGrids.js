@@ -31,7 +31,7 @@ function OwnGrids() {
     return (
         <div className="container main-container">
             <div className="row">
-            { !!list.length ? (list.map((e=>(
+            { !!list.length ? (list.map(((e,idx)=>(
               <div key={e.id} className="col-12 col-sm-6 col-md-3">
                 <div className="card mb-3">
                     <div className="card-body">
@@ -42,7 +42,7 @@ function OwnGrids() {
                               "/preview"
                             } class="card-img-top" alt="Aperçu grille"/>
                         <h3 style={{width: '100%'}}>{e.published ? <Link className="stretched-link" to={"/grille/"+e.id}>{e.title}</Link> : e.title}
-                        <Link className="float-end" style={{ zIndex: 2 }}to={"/grille/"+e.id+'/modifier'}><button className="float-right btn btn-primary">Modifier</button></Link></h3>
+                        <Link className="float-end" style={{ zIndex: 2+idx }}to={"/grille/"+e.id+'/modifier'}><button className="float-right btn btn-primary">Modifier</button></Link></h3>
                         <span>{e.width}x{e.height} {e.published && <span className="badge bg-danger">publié</span>}</span><br/>
                         <span>Créée {(new Date(e.creation_date)).toLocaleDateString("fr-FR")}</span><br/>
                         <span>Modifiée {(new Date(e.modification_date)).toLocaleDateString("fr-FR")}</span>
