@@ -4,9 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 from knox.models import AuthToken
-
+from io import BytesIO
 from rest_framework import generics, parsers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
@@ -25,6 +26,7 @@ from crosswords.serializers import (
     EmailSerializer,
     ResendVerificationSerializer
 )
+from PIL import Image, ImageDraw
 
 
 class LoginView(generics.CreateAPIView):
@@ -150,3 +152,45 @@ class ResendVerificationView(generics.GenericAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def preview_pic(request, uid):
+    grid = get_object_or_404(Grid, uid=uid)
+
+    img = Image.new("RGBA", (800, 600), (0,0,0,0))
+    draw = ImageDraw.Draw(img, "RGBA")
+
+    r = 8 / 6
+    gr = grid.width / grid.height
+    if gr > r:
+        fw = 800 - 20
+        fh = fh / gr
+        offset_x = 10
+        offset_y = (600 - fh) / 2
+    else:
+        fh = 600 - 20
+        fw = fh * gr
+        offset_x = (800 - fw) / 2
+        offset_y = 10
+
+    draw.rectangle(((offset_x, offset_y), (offset_x + fw, offset_y + fh)), outline="black", width=2)
+    pattern = grid.grid
+    for x in range(grid.width):
+        draw.rectangle(((offset_x, offset_y), (offset_x + fw / grid.width * x, offset_y + fh)), outline="black", width=2)
+    for y in range(grid.height):
+        draw.rectangle(((offset_x, offset_y), (offset_x + fw, offset_y + fh / grid.height * y)), outline="black", width=2)
+    
+    for i, c in enumerate(grid.grid):
+        x = i % grid.width
+        y = i // grid.height
+        if c == " ":
+            draw.rectangle(
+                (
+                    (offset_x + fw / grid.width * x, offset_y + fh / grid.height * y),
+                    (offset_x + fw / grid.width * (x + 1), offset_y + fh / grid.height * (y + 1))
+                ),
+                fill="black"
+            )
+    with BytesIO() as output:
+        img.save(output, format="PNG")
+        return HttpResponse(output.getvalue(), content_type="image/png")

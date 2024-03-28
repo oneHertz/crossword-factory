@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useGlobalState from '../utils/useGlobalState'
 import { Link } from "react-router-dom";
+import LazyImage from "./LazyImage";
 
 function OwnGrids() {
     const globalState = useGlobalState()
@@ -29,17 +30,28 @@ function OwnGrids() {
 
     return (
         <div className="container main-container">
+            <div className="row">
             { !!list.length ? (list.map((e=>(
-              <div key={e.id}><div style={{width: '100%'}}>
-                    <h3 style={{width: '100%'}}>{e.published ? <Link to={"/grille/"+e.id}>{e.title}</Link> : e.title} <Link to={"/grille/"+e.id+'/modifier'}><button className="float-right btn btn-primary">Modifier</button></Link></h3>
-                    <span>{e.width}x{e.height} {e.published && <span className="badge bg-danger">publié</span>}</span><br/>
-                    <span>Créée {(new Date(e.creation_date)).toLocaleDateString("fr-FR")}</span><br/>
-                    <span>Modifiée {(new Date(e.modification_date)).toLocaleDateString("fr-FR")}</span>
+              <div key={e.id} className="col-3">
+                <div className="card mb-3">
+                    <div className="card-body">
+                        <LazyImage src={
+                              process.env.REACT_APP_API_URL +
+                              "/grid/" +
+                              e.id +
+                              "/preview"
+                            } class="card-img-top" alt="Aperçu grille"/>
+                        <h3 style={{width: '100%'}}>{e.published ? <Link className="stretched-link" to={"/grille/"+e.id}>{e.title}</Link> : e.title}
+                        <Link className="float-end" style={{ zIndex: 2 }}to={"/grille/"+e.id+'/modifier'}><button className="float-right btn btn-primary">Modifier</button></Link></h3>
+                        <span>{e.width}x{e.height} {e.published && <span className="badge bg-danger">publié</span>}</span><br/>
+                        <span>Créée {(new Date(e.creation_date)).toLocaleDateString("fr-FR")}</span><br/>
+                        <span>Modifiée {(new Date(e.modification_date)).toLocaleDateString("fr-FR")}</span>
+                    </div>
                 </div>
-                <hr/>
               </div>
             )))): <h2>Pas de grilles</h2>
             }
+            </div>
         </div>
     )
 }

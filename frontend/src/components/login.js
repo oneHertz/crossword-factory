@@ -62,19 +62,42 @@ const Login = () => {
     }
     return (
       <>
-      <div className="container-fluid top-page">
-      <center style={{paddingTop: "1em"}}><h1><a href="/" style={{fontWeight: "bold", textDecoration: "none", color: "#22f"}}>Verbicruciste.fr</a></h1>
-      <span>Le site pour créer des grilles de mots croisés</span></center>
-      </div>
+      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <div className="container-fluid">
+          <Link className="navbar-brand" href="#">Verbicruciste.fr</Link>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+            <ul className="navbar-nav d-flex flex-start">
+              {username && (<>
+                  <li className="nav-item">
+                    <Link className="nav-link" to='/'>Mes Grilles</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/settings/">Paramètres</Link>
+                  </li>
+                  <li className="nav-item d-flex ms-2">
+                    <button onClick={onLogout} className="btn btn-danger btn-sm">Deconnéction</button>
+                  </li>
+                </>)}
+                {!username && (<>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/">Index</Link>
+                  </li>
+                  <li className="nav-item d-flex">
+                    <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-success btn-sm">Connection</button>
+                  </li>
+                </>
+                )}
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div className="container-fluid top-page"></div>
       <div>
       <div style={{marginTop: '15px', marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
-      {username && <div style={{textAlign:'right'}}>
-          <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <Link to='/mes-grilles/'><button className="btn btn-success btn-sm"><i className="fas fa-link"></i> Vos grilles</button></Link> <Link to='/settings/'><button className="btn btn-info btn-sm"><i className="fas fa-link"></i> Paramètres</button></Link> <button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Deconnéction</button>&nbsp;
-        </div>}
-      {!username && (<div style={{textAlign:'right'}}>
-        <Link to="/"><button className="btn btn-secondary btn-sm">Index</button></Link> <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Connection</button>
-          &nbsp;
-        </div>)}
       {!username && wantLogin && (<div>
         <div className="modal" role="dialog" style={{display: 'block'}}>
           <div className="modal-dialog">

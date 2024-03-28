@@ -6,3 +6,4 @@ django-cors-headers
 dj-rest-auth[with_social]
 requests
 bs4
+pillow
