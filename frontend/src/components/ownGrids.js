@@ -42,7 +42,7 @@ function OwnGrids() {
                               "/preview"
                             } class="card-img-top" alt="Aperçu grille"/>
                         <h3 style={{width: '100%'}}>{e.published ? <Link className="stretched-link" to={"/grille/"+e.id}>{e.title}</Link> : e.title}</h3>
-                        <div className="float-end" style={{ zIndex: 11 }}><Linkto={"/grille/"+e.id+'/modifier'}><button type="button" className="float-right btn btn-primary">Modifier</button></Link></div>
+                        <div className="float-end" style={{ zIndex: 11 }}><Link to={"/grille/"+e.id+'/modifier'}><button type="button" className="float-right btn btn-primary">Modifier</button></Link></div>
                         <span>{e.width}x{e.height} {e.published && <span className="badge bg-danger">publié</span>}</span><br/>
                         <span>Créée {(new Date(e.creation_date)).toLocaleDateString("fr-FR")}</span><br/>
                         <span>Modifiée {(new Date(e.modification_date)).toLocaleDateString("fr-FR")}</span>
