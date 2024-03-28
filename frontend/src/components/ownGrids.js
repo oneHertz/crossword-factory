@@ -32,7 +32,7 @@ function OwnGrids() {
         <div className="container main-container">
             <div className="row">
             { !!list.length ? (list.map((e=>(
-              <div key={e.id} className="col-3">
+              <div key={e.id} className="col-12 col-sm-6 col-md-3">
                 <div className="card mb-3">
                     <div className="card-body">
                         <LazyImage src={
