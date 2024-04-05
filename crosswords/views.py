@@ -164,7 +164,7 @@ def preview_pic(request, uid):
     gr = grid.width / grid.height
     if gr > r:
         fw = 800 - 20
-        fh = fh / gr
+        fh = fw / gr
         offset_x = 10
         offset_y = (600 - fh) / 2
     else:
@@ -182,7 +182,7 @@ def preview_pic(request, uid):
     
     for i, c in enumerate(grid.grid):
         x = i % grid.width
-        y = i // grid.height
+        y = i // grid.width
         if c == " ":
             draw.rectangle(
                 (
