@@ -359,18 +359,22 @@ function GridEditor(props) {
                     <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><textarea style={{width: '500px'}} rows="4" cols="50" onChange={(e) => setVerticalDef(i, e.target.value)} defaultValue={def[1][i]}></textarea></div>
                 ))}
                 </div>
-                <div style={{marginTop: '15px'}}>
-                    <button className="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
-                </div>
-                <div style={{marginTop: '15px'}}>
-                    <button className="btn btn-danger" onClick={deleteG}>Supprimer</button>
-                </div>
+                {!isGridFull() && <div style={{marginTop: '15px'}}>
+                    <span class="text-muted">Lettres ou Définitions manquantes!</span>
+                </div>}
                 {isGridFull() && gridId && !pub && <div style={{marginTop: '15px'}}>
                     <button className="btn btn-success" onClick={publish}>Publier</button>
                 </div>}
                 {isGridFull() && gridId && pub && <div style={{marginTop: '15px'}}>
                     <button className="btn btn-success" onClick={unpublish}>Dépublier</button>
                 </div>}
+                <div style={{marginTop: '15px'}}>
+                    <button className="btn btn-primary save-btn" onClick={save}>Sauvegarder</button>
+                </div>
+                <div style={{marginTop: '15px'}}>
+                    <button className="btn btn-danger" onClick={deleteG}>Supprimer</button>
+                </div>
+                
                 </>)
             }
             {shareModalOpen && <ShareModal url={sharedUrl} onClose={()=>setShareModalOpen(false)}/> }
