@@ -1,0 +1,20 @@
+[Unit]
+Description="crossword server"
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=Simple
+ExecStart=/apps/crossword-factory/env/bin/uwsgi --ini /apps/crossword-factory/bin/uwsgi.ini
+Restart=always
+User=apps
+Group=apps
+Environment="PATH=/apps/crossword-factory/env/bin/"
+WorkingDirectory=/apps/crossword-factory/
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutSec=600
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
