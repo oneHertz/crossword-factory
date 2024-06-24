@@ -10,4 +10,4 @@ source $BASEDIR/env/bin/activate
 uv pip install -r ./requirements.txt
 ./manage.py migrate --noinput
 ./manage.py build_frontend
-echo "You can restart the service with: \"sudo service crossword restart\""
+systemctl --user restart crossword
