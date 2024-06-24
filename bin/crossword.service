@@ -7,13 +7,11 @@ After=network-online.target
 Type=Simple
 ExecStart=/apps/crossword-factory/env/bin/uwsgi --ini /apps/crossword-factory/bin/uwsgi.ini
 Restart=always
-User=apps
-Group=apps
 Environment="PATH=/apps/crossword-factory/env/bin/"
 WorkingDirectory=/apps/crossword-factory/
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
-TimeoutSec=600
+TimeoutSec=6
 PrivateTmp=true
 
 [Install]
