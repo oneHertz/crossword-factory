@@ -259,8 +259,8 @@ function GridEditor(props) {
         window.location.reload();
     }
     const deleteG = async () => {
-        const conf = window.confirm('Etes vous sûre?')
-        if(!conf){
+        const conf = window.prompt('Etes vous sûre?\nTapez "supprimer" pour confirmer:')
+        if(!conf || !/^supprimer$/i.test(conf)){
             return
         }
         await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
