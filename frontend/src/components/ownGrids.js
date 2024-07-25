@@ -39,7 +39,7 @@ function OwnGrids() {
                               process.env.REACT_APP_API_URL +
                               "/grid/" +
                               e.id +
-                              "/preview"
+                              "/preview?auth_token=" + api_token
                             } class="card-img-top" alt="Aperçu grille"/>
                         <h3 style={{width: '100%'}}>{e.published ? <Link className="stretched-link" to={"/grille/"+e.id}>{e.title}</Link> : e.title}</h3>
                         <div style={{ zIndex: 11, position: 'relative', textAlign: 'right' }}><Link to={"/grille/"+e.id+'/modifier'}><button type="button" className="float-right btn btn-primary">Modifier</button></Link></div>
