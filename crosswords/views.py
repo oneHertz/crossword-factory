@@ -154,6 +154,7 @@ class ResendVerificationView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
 def preview_pic(request, uid):
     grid = get_object_or_404(Grid, uid=uid)
 
