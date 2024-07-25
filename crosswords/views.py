@@ -26,7 +26,7 @@ from crosswords.serializers import (
     EmailSerializer,
     ResendVerificationSerializer
 )
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 
 class LoginView(generics.CreateAPIView):
@@ -191,6 +191,9 @@ def preview_pic(request, uid):
                 ),
                 fill="black"
             )
+        elif request.user == grid.author:
+            font = ImageFont.truetype('times new roman.ttf', size=fw / grid.width * 0.8)  # size should be in points but I don't now, how to do it
+            draw.text((offset_x * 1.05 + fw / grid.width * x, offset_y * 1.05 + fh / grid.height * y), grid.solution[i], fill='black', font=font)
     with BytesIO() as output:
         img.save(output, format="PNG")
         return HttpResponse(output.getvalue(), content_type="image/png")
