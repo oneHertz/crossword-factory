@@ -47,28 +47,28 @@ const Register = () => {
             <form onSubmit={onRegister}>
             <div className="form-group mb-3">
                 <label htmlFor="username"><i className="fas fa-user"></i> Nom d'utilisateur</label>
-                <input onChange={(e)=>{setLogin(e.target.value)}} type="text" className={"form-control" + (errors.username ? ' is-invalid' : '')} id="username" name="username" placeholder="Nom d'utilisateur"/>
+                <input onChange={(e)=>{setLogin(e.target.value)}} type="text" className={"form-control" + (errors.username ? ' is-invalid' : '')} id="username" name="username" placeholder="Nom d'utilisateur" required/>
                 {errors.username && (<div className="invalid-feedback">
                     {errors.username}
                 </div>)}
             </div>
             <div className="form-group mb-3">
                 <label htmlFor="email"><i className="fas fa-at"></i> Adresse Electronique</label>
-                <input onChange={(e)=>{setEmail(e.target.value)}} type="email" className={"form-control" + (errors.email ? ' is-invalid' : '')} id="email" name="email" placeholder="Adresse Electronique"/>
+                <input onChange={(e)=>{setEmail(e.target.value)}} type="email" className={"form-control" + (errors.email ? ' is-invalid' : '')} id="email" name="email" placeholder="Adresse Electronique" required/>
                 {errors.email && (<div className="invalid-feedback">
                     {errors.email}
                 </div>)}
             </div>
             <div className="form-group mb-3">
                 <label htmlFor="firstName"><i className="fas fa-user"></i> Prénom</label>
-                <input onChange={(e)=>{setFirstName(e.target.value)}} type="text" className={"form-control" + (errors.first_name ? ' is-invalid' : '')} id="firstName" name="firstName" placeholder="Prénom"/>
+                <input onChange={(e)=>{setFirstName(e.target.value)}} type="text" className={"form-control" + (errors.first_name ? ' is-invalid' : '')} id="firstName" name="firstName" placeholder="Prénom" required/>
                 {errors.first_name && (<div className="invalid-feedback">
                     {errors.first_name}
                 </div>)}
             </div>
             <div className="form-group mb-3">
                 <label htmlFor="lastName"><i className="fas fa-user"></i> Nom de famille</label>
-                <input onChange={(e)=>{setLastName(e.target.value)}} type="text" className={"form-control" + (errors.last_name ? ' is-invalid' : '')} id="lastName" name="lastName" placeholder="Nom de famille"/>
+                <input onChange={(e)=>{setLastName(e.target.value)}} type="text" className={"form-control" + (errors.last_name ? ' is-invalid' : '')} id="lastName" name="lastName" placeholder="Nom de famille" required/>
                 {errors.last_name && (<div className="invalid-feedback">
                     {errors.last_name}
                 </div>)}
