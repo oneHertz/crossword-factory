@@ -3,7 +3,6 @@ import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
 import Swal from 'sweetalert2'
 
-  console.log(import.meta.env)
 const EmailItem = (props) => {
   const [resent, setResent] = React.useState(false);
   const globalState = useGlobalState();
