@@ -12,7 +12,7 @@ const VerifyEmail = () => {
     React.useEffect(()=>{
         (async () => {
             if(key) {
-                const res = await fetch(process.env.REACT_APP_API_URL + '/auth/registration/verify-email/', {
+                const res = await fetch(import.meta.env.VITE_API_URL + '/auth/registration/verify-email/', {
                     method: 'POST',
                     credentials: 'omit',
                     headers: {
@@ -40,7 +40,7 @@ const VerifyEmail = () => {
 
     const onSubmitResend = async (e) => {
         e.preventDefault()
-        await fetch(process.env.REACT_APP_API_URL+'/auth/registration/resend-verification/', {
+        await fetch(import.meta.env.VITE_API_URL+'/auth/registration/resend-verification/', {
           method: 'POST',
           credentials: 'omit',
           headers: {

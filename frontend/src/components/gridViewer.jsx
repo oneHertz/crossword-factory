@@ -26,7 +26,7 @@ function GridEditor() {
 
       const loadGrid = async (id) => {
         try {
-            const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id)
+            const r = await fetch(import.meta.env.VITE_API_URL+'/grid/'+id)
             const d = await r.json()
             setTitle(d.title)
             setAuthor(d.author)
@@ -236,15 +236,11 @@ function GridEditor() {
     }
 
     const checkSolution = async () => {
-        const { createHash } = await import('crypto');
         const txt = solutions.map(l=>l.map(c=>c.toLowerCase()).join('')).join('')
-        const h = createHash('sha256')
-        h.update(txt, 'ascii')
-        const solutionHash = h.digest('base64').replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_')
-        
+        const solutionHash = btoa(String.fromCharCode(...new Uint8Array(await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt))))).replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_')
         try {
             const resp = await fetch(
-                process.env.REACT_APP_API_URL + '/grid/' + gridId + '/check',
+                import.meta.env.VITE_API_URL + '/grid/' + gridId + '/check',
                 {
                     method: 'POST',
                     credentials: 'omit',

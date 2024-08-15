@@ -3,15 +3,15 @@ import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
 import Swal from 'sweetalert2'
 
+  console.log(import.meta.env)
 const EmailItem = (props) => {
   const [resent, setResent] = React.useState(false);
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
   const {email, primary, verified, onUpdate} = props;
-
   const makePrimary = async (e) => {
     e.preventDefault();
-    const res = await fetch(process.env.REACT_APP_API_URL + '/auth/emails/' + email, {
+    const res = await fetch(import.meta.env.VITE_API_URL + '/auth/emails/' + email, {
       method: 'PATCH',
       credentials: 'omit',
       headers: {
@@ -37,7 +37,7 @@ const EmailItem = (props) => {
     if (!isConfirmed) {
       return
     }
-    await fetch(process.env.REACT_APP_API_URL + '/auth/emails/' + email, {
+    await fetch(import.meta.env.VITE_API_URL + '/auth/emails/' + email, {
       method: 'DELETE',
       credentials: 'omit',
       headers: {
@@ -50,7 +50,7 @@ const EmailItem = (props) => {
 
   const onResend = async (e) => {
     e.preventDefault();
-    const res = await fetch(process.env.REACT_APP_API_URL + '/auth/registration/resend-verification/', {
+    const res = await fetch(import.meta.env.VITE_API_URL + '/auth/registration/resend-verification/', {
       method: 'POST',
       credentials: 'omit',
       headers: {
@@ -89,7 +89,7 @@ const EmailsList = () => {
   const { api_token } = globalState.user
   
   const fetchEmails = async () => {
-    const res = await fetch(process.env.REACT_APP_API_URL + '/auth/emails/', {
+    const res = await fetch(import.meta.env.VITE_API_URL + '/auth/emails/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ const EmailsList = () => {
 
   const addEmail = async (e) => {
     e.preventDefault();
-    const res = await fetch(process.env.REACT_APP_API_URL + '/auth/emails/', {
+    const res = await fetch(import.meta.env.VITE_API_URL + '/auth/emails/', {
       method: 'POST',
       credentials: 'omit',
       headers: {

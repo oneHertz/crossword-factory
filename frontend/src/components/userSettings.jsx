@@ -13,7 +13,7 @@ const UserSettings = () => {
 
     React.useEffect(() => {
         (async () => {
-            const res = await fetch(process.env.REACT_APP_API_URL + '/auth/user/', {
+            const res = await fetch(import.meta.env.VITE_API_URL + '/auth/user/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ const UserSettings = () => {
       if (_username !== username) {
           postData.username = username
       }
-      const res = await fetch(process.env.REACT_APP_API_URL+'/auth/user/', {
+      const res = await fetch(import.meta.env.VITE_API_URL+'/auth/user/', {
         method: 'PATCH',
         credentials: 'omit',
         headers: {

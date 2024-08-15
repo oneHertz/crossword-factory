@@ -11,7 +11,7 @@ function OwnGrids() {
     useEffect(()=>{
         const loadGrids = async () => {
             try {
-                const r = await fetch(process.env.REACT_APP_API_URL+'/user/'+username,{
+                const r = await fetch(import.meta.env.VITE_API_URL+'/user/'+username,{
                     method: 'GET',
                     credentials: 'omit',
                     headers: {
@@ -36,7 +36,7 @@ function OwnGrids() {
                 <div className="card mb-3">
                     <div className="card-body">
                         <LazyImage src={
-                              process.env.REACT_APP_API_URL +
+                              import.meta.env.VITE_API_URL +
                               "/grid/" +
                               e.id +
                               "/preview?auth_token=" + api_token

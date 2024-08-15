@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import useGlobalState from '../utils/useGlobalState.js'
+import useGlobalState from '../utils/useGlobalState'
 import {Helmet} from 'react-helmet'
 import OwnGrids from './ownGrids'
 

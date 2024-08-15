@@ -14,7 +14,7 @@ const Login = () => {
       (async () => {
         if (username) {
           try {
-            const res = await fetch(process.env.REACT_APP_API_URL + '/auth/user/', {
+            const res = await fetch(import.meta.env.VITE_API_URL + '/auth/user/', {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ const Login = () => {
 
     const onLogin = async (e) => {
       e.preventDefault()
-      const res = await fetch(process.env.REACT_APP_API_URL + '/auth/login', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/auth/login', {
         method: 'POST',
         credentials: 'omit',
         headers: {

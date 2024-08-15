@@ -20,7 +20,7 @@ function GridEditor(props) {
     useEffect(()=>{
         const loadGrid = async (id) => {
             try {
-                const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id, {
+                const r = await fetch(import.meta.env.VITE_API_URL+'/grid/'+id, {
                     method: 'GET',
                     credentials: 'omit',
                     headers: {
@@ -188,7 +188,7 @@ function GridEditor(props) {
 
     const save = async () => {
         try {
-            const url = process.env.REACT_APP_API_URL + '/grid/' + (gridId ? gridId : 'new')
+            const url = import.meta.env.VITE_API_URL + '/grid/' + (gridId ? gridId : 'new')
             const response = await fetch(url, {
                 method: gridId ? 'PUT' : 'POST',
                 credentials: 'omit',
@@ -221,7 +221,7 @@ function GridEditor(props) {
     }
 
     const publish = async () => {
-        await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
+        await fetch(import.meta.env.VITE_API_URL+'/grid/'+gridId, {
             method: 'PUT',
             credentials: 'omit',
             headers: {
@@ -240,7 +240,7 @@ function GridEditor(props) {
         window.location = '/grille/' + gridId
     }
     const unpublish = async () => {
-        await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
+        await fetch(import.meta.env.VITE_API_URL+'/grid/'+gridId, {
             method: 'PUT',
             credentials: 'omit',
             headers: {
@@ -263,7 +263,7 @@ function GridEditor(props) {
         if(!conf || !/^supprimer$/i.test(conf)){
             return
         }
-        await fetch(process.env.REACT_APP_API_URL+'/grid/'+gridId, {
+        await fetch(import.meta.env.VITE_API_URL+'/grid/'+gridId, {
             method: 'DELETE',
             credentials: 'omit',
             headers: {
@@ -307,11 +307,8 @@ function GridEditor(props) {
     }
 
     const shareSolution = async () => {
-        const { createHash } = await import('crypto');
         const txt = solutions.map(l=>l.map(c=> c.toLowerCase()).join('')).join('')
-        const h = createHash('sha256')
-        h.update(txt, 'ascii')
-        const solutionHash = h.digest('base64').replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_')
+        const solutionHash = btoa(String.fromCharCode(...new Uint8Array(await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt))))).replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_')
         const url = getRootUrl() + 'grille/' + gridId + '/solution/' + solutionHash
         setSharedUrl(url)
         if(webShareApiAvailable) {

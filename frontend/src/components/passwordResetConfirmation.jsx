@@ -20,7 +20,7 @@ const Register = () => {
     const onSubmit = async (e) => {
       e.preventDefault()
       const [uid, token] = key.split(':')
-      const res = await fetch(process.env.REACT_APP_API_URL+'/auth/password/reset/confirm/', {
+      const res = await fetch(import.meta.env.VITE_API_URL+'/auth/password/reset/confirm/', {
         method: 'POST',
         credentials: 'omit',
         headers: {

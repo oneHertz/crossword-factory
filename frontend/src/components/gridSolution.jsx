@@ -13,7 +13,7 @@ function GridSolution(props) {
 
     const loadGrid = async (id, solutionH) => {
         try {
-            const r = await fetch(process.env.REACT_APP_API_URL+'/grid/'+id+'/check', {
+            const r = await fetch(import.meta.env.VITE_API_URL+'/grid/'+id+'/check', {
                 method: 'POST',
                 credentials: 'omit',
                 headers: {

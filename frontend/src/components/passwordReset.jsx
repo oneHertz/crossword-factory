@@ -16,7 +16,7 @@ const PasswordReset = () => {
   
     const onSubmit = async (e) => {
       e.preventDefault()
-      const res = await fetch(process.env.REACT_APP_API_URL+'/auth/password/reset/', {
+      const res = await fetch(import.meta.env.VITE_API_URL+'/auth/password/reset/', {
         method: 'POST',
         credentials: 'omit',
         headers: {
