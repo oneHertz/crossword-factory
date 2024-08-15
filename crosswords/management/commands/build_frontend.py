@@ -23,7 +23,7 @@ class Command(BaseCommand):
 
         self.stdout.write('Building client app ...')
         subprocess.check_output(['yarn', 'install'], cwd=client_dir)
-        subprocess.check_output(['yarn', 'build', '--production'], cwd=client_dir)
+        subprocess.check_output(['yarn', 'build'], cwd=client_dir)
 
         self.stdout.write('Collecting static files ...')
         call_command(
