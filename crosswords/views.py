@@ -174,12 +174,16 @@ def preview_pic(request, uid):
         offset_x = (800 - fw) / 2
         offset_y = 10
 
+    col_width = fw / grid.width
+    row_height = fh / grid.height
+
+
     draw.rectangle(((offset_x, offset_y), (offset_x + fw, offset_y + fh)), outline="black", width=2)
     pattern = grid.grid
     for x in range(grid.width):
-        draw.rectangle(((offset_x, offset_y), (offset_x + fw / grid.width * x, offset_y + fh)), outline="black", width=2)
+        draw.rectangle(((offset_x, offset_y), (offset_x + col_width * x, offset_y + fh)), outline="black", width=2)
     for y in range(grid.height):
-        draw.rectangle(((offset_x, offset_y), (offset_x + fw, offset_y + fh / grid.height * y)), outline="black", width=2)
+        draw.rectangle(((offset_x, offset_y), (offset_x + fw, offset_y + row_height * y)), outline="black", width=2)
     
     for i, c in enumerate(grid.grid):
         x = i % grid.width
@@ -187,14 +191,32 @@ def preview_pic(request, uid):
         if c == " ":
             draw.rectangle(
                 (
-                    (offset_x + fw / grid.width * x, offset_y + fh / grid.height * y),
-                    (offset_x + fw / grid.width * (x + 1), offset_y + fh / grid.height * (y + 1))
+                    (
+                        offset_x + col_width * x,
+                        offset_y + row_height * y
+                    ),
+                    (
+                        offset_x + col_width * (x + 1),
+                        offset_y + row_height * (y + 1)
+                    )
                 ),
                 fill="black"
             )
         elif request.user == grid.author:
             font = ImageFont.truetype('times new roman.ttf', size=fw / grid.width * 0.8)  # size should be in points but I don't now, how to do it
-            draw.text((offset_x * 1.05 + fw / grid.width * x, offset_y * 1.05 + fh / grid.height * y), grid.solution[i].capitalize(), fill='black', font=font)
+            letter = grid.solution[i].capitalize()
+            letter_size = font.getbbox(letter)
+            letter_width = letter_size[2]
+            letter_height = letter_size[3] + letter_size[1]
+            draw.text(
+                (
+                    offset_x + col_width * x + (col_width - letter_width) / 2,
+                    offset_y + row_height * y + (row_height - letter_height) / 2
+                ),
+                letter,
+                fill='black',
+                font=font
+            )
     with BytesIO() as output:
         img.save(output, format="PNG")
         return HttpResponse(output.getvalue(), content_type="image/png")
