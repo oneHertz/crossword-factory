@@ -185,6 +185,18 @@ def preview_pic(request, uid):
     for y in range(grid.height):
         draw.rectangle(((offset_x, offset_y), (offset_x + fw, offset_y + row_height * y)), outline="black", width=2)
     
+    font = ImageFont.truetype('times new roman.ttf', size=fw / grid.width * 0.8)  # size should be in points but I don't now, how to do it
+            
+    letters = list(set(list(grid.solution)))
+    letters_size = {}
+    for letter in letters:
+        if letter != " ":
+            cap_letter = letter.capitalize()
+            letter_size = font.getbbox(cap_letter)
+            letter_width = letter_size[2]
+            letter_height = letter_size[3] + letter_size[1]
+            letters_size[cap_letter] = (letter_width, letter_height)
+
     for i, c in enumerate(grid.grid):
         x = i % grid.width
         y = i // grid.width
@@ -203,11 +215,8 @@ def preview_pic(request, uid):
                 fill="black"
             )
         elif request.user == grid.author:
-            font = ImageFont.truetype('times new roman.ttf', size=fw / grid.width * 0.8)  # size should be in points but I don't now, how to do it
             letter = grid.solution[i].capitalize()
-            letter_size = font.getbbox(letter)
-            letter_width = letter_size[2]
-            letter_height = letter_size[3] + letter_size[1]
+            letter_width, letter_height = letters_size[letter]
             draw.text(
                 (
                     offset_x + col_width * x + (col_width - letter_width) / 2,
