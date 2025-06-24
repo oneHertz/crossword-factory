@@ -1,0 +1,9 @@
+django<5
+djangorestframework
+uwsgi
+django-rest-knox
+django-cors-headers
+dj-rest-auth[with_social]
+requests
+bs4
+pillow
