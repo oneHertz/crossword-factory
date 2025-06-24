@@ -252,10 +252,9 @@ SLUG_BLACKLIST = [
     'maps', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation'
 ]
 
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {'username'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_USERNAME_BLACKLIST = SLUG_BLACKLIST
-ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USERNAME_MIN_LENGTH = 2
 ACCOUNT_USERNAME_VALIDATORS = 'utils.validators.custom_username_validators'
 ACCOUNT_ADAPTER = 'utils.account_adapter.CustomAccountAdapter'
