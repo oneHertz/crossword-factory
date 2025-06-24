@@ -9,10 +9,10 @@ urlpatterns = [
     re_path(r'^grid/(?P<uid>[a-zA-Z0-9_-]+)/preview/?$', views.preview_pic, name='grid_detail'),
     re_path(r'^grid/(?P<uid>[a-zA-Z0-9_-]+)/check/?$', views.check_grid_solution, name='grid_check_view'),
     path('auth/user/', view=views.UserEditView.as_view(), name='auth_user_detail'),
+    path('auth/login', view=views.LoginView.as_view(), name='knox_login'),
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
     path('auth/emails/', view=views.EmailsView.as_view(), name='auth_emails'),
     re_path(r'^auth/emails/(?P<email>[^/]+)/?$', views.EmailDetailView.as_view(), name="auth_email_detail"),
     path('auth/registration/resend-verification/', views.ResendVerificationView.as_view(), name="auth_resend_verification"),
-    path('auth/login', view=views.LoginView.as_view(), name='knox_login'),
 ]
