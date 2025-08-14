@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 Type=Simple
-ExecStart=/apps/crossword-factory/env/bin/uwsgi --ini /apps/crossword-factory/bin/uwsgi.ini
+ExecStart=/apps/crossword-factory/env/bin/gunicorn -c /apps/crossword-factory/bin/gunicorn.conf.py -b unix:/apps/crossword-factory/var/django.sock
 Restart=always
 Environment="PATH=/apps/crossword-factory/env/bin/"
 WorkingDirectory=/apps/crossword-factory/

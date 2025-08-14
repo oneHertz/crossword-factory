@@ -1,6 +1,6 @@
-django<5
+django<6
 djangorestframework
-uwsgi
+gunicorn
 django-rest-knox
 django-cors-headers
 dj-rest-auth[with_social]
