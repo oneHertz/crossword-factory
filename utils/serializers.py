@@ -1,20 +1,22 @@
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-try:
-    from allauth.account import app_settings as allauth_settings
-    from allauth.utils import (email_address_exists,
-                               get_username_max_length)
-    from allauth.account.adapter import get_adapter
-    from allauth.account.forms import default_token_generator
-    from allauth.account.utils import (setup_user_email,
-                                       user_pk_to_url_str, user_username)
-except ImportError:
-    raise ImportError("allauth needs to be added to INSTALLED_APPS.")
+
+from allauth.account import app_settings as allauth_settings
+from allauth.utils import get_username_max_length
+from allauth.account.adapter import get_adapter
+from allauth.account.forms import default_token_generator
+from allauth.account.utils import (setup_user_email,
+                                    user_pk_to_url_str, user_username)
+from allauth.account.models import EmailAddress
 
 from dj_rest_auth.serializers import PasswordResetSerializer
 from dj_rest_auth.forms import AllAuthPasswordResetForm as OrigResetForm
 from rest_framework import serializers
+
+
+def email_address_exists(email):
+    return EmailAddress.objects.filter(email=email).exists()
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -28,6 +30,10 @@ class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(required=allauth_settings.EMAIL_REQUIRED)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._has_phone_field = False
 
     def validate_username(self, username):
         username = get_adapter().clean_username(username)

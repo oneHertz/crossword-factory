@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-systemctl --user reload crossword
+systemctl --user restart crossword
