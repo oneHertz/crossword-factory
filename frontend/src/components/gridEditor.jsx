@@ -171,7 +171,7 @@ function GridEditor(props) {
         tmp[1][i] = txt
         setDef(tmp)
     }
-
+/*
     const romanize = (num) => {
         if (isNaN(num))
             return NaN;
@@ -185,7 +185,7 @@ function GridEditor(props) {
             roman = (key[+digits.pop() + (i * 10)] || "") + roman;
         return Array(+digits.join("") + 1).join("M") + roman;
     }
-
+*/
     const save = async () => {
         try {
             const url = import.meta.env.VITE_API_URL + '/grid/' + (gridId ? gridId : 'new')
@@ -333,7 +333,7 @@ function GridEditor(props) {
                 <button className="ms-1 btn btn-primary" onClick={freezeDimensions}>Continuer</button>
             </>)}
             {dimensionsFrozen && (<><div className="mb-3"><label>Titre: </label><input type='text' onChange={(e)=>setTitle(e.target.value)} placeholder="Titre de la grille" defaultValue={title}></input> {pub && <span className="ms-1 badge bg-danger">publié</span>}</div>{pub && (<><button onClick={share} className="btn btn-info inv mb-1">Partager la grille</button> <button onClick={shareSolution} className="btn btn-info inv mb-1">Partager la solution</button></>)}<table className="mt-3"><tbody>
-                <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
+                <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td style={{width: '2em', height: '2em', border: '1px solid #000'}}><input onMouseDown={() => {switchWritingDir(i, j);selectBlock(i, j)}} type='text' key={i+'_'+j} id={'square_'+i+'_'+j} ref={(input) => { aaa.current[i+'_'+j] = input }} style={{userSelect: 'none',outline: 'none', textAlign: 'center', border: '0', caretColor: 'transparent', width: '2em', backgroundColor: ((selectedBlock && (selectedBlock[0] === i && selectedBlock[1] === j)) ? 'red' : (val === ' ' ? 'black' : ((selectedBlock && ((writingDirection === 'h' && i === selectedBlock[0])||(writingDirection === 'v' && j === selectedBlock[1])))?'#f99':'white')))}} onKeyDown={(e) => setSolutionXY(i, j, e)} defaultValue={solutions[i][j] ? val : ''} onChange={(e)=>onSquareChanged(i, j, e)}/></td>))}</tr>
                 ))
@@ -353,7 +353,7 @@ function GridEditor(props) {
                 <h4>Verticalement</h4>
                 <div>
                 {solutions[0].map((l, i) => (
-                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><textarea style={{width: '500px'}} rows="4" cols="50" onChange={(e) => setVerticalDef(i, e.target.value)} defaultValue={def[1][i]}></textarea></div>
+                    <div style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{(i+1)}. </span><textarea style={{width: '500px'}} rows="4" cols="50" onChange={(e) => setVerticalDef(i, e.target.value)} defaultValue={def[1][i]}></textarea></div>
                 ))}
                 </div>
                 {!isGridFull() && <div style={{marginTop: '15px'}}>

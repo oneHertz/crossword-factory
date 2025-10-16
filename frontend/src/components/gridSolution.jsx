@@ -45,7 +45,7 @@ function GridSolution(props) {
             (async () => (await loadGrid(gridId, solutionHash)))()
         }  
     }, [gridId, solutionHash])
-
+/*
     const romanize = (num) => {
         if (isNaN(num))
             return NaN;
@@ -59,12 +59,12 @@ function GridSolution(props) {
             roman = (key[+digits.pop() + (i * 10)] || "") + roman;
         return Array(+digits.join("") + 1).join("M") + roman;
     }
-
+*/
     return (
         <div className="container main-container">
             <div ref={componentRef} style={{margin:'15px'}}><h1>Solution</h1>
             {solutions && (<table>
-                <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
+                <tr><td> </td>{solutions[0].map((val, j)=>(<td style={{textAlign: 'center'}}>{(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr><td>{i+1}.</td>{line.map((val, j)=>(<td className={'box ' + (val === ' ' ? 'blackBox': '')}>
                     {val !== ' ' && (

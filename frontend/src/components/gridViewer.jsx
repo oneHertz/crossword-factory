@@ -73,7 +73,7 @@ function GridEditor() {
       }
     }, [gridId])
 
-
+/*
     const romanize = (num) => {
         if (isNaN(num))
             return NaN;
@@ -87,7 +87,7 @@ function GridEditor() {
             roman = (key[+digits.pop() + (i * 10)] || "") + roman;
         return Array(+digits.join("") + 1).join("M") + roman;
     }
-
+*/
     const selectNextBlock = (i, j) => {
         var wd = writingDirection
         var maxH = maxHighlight
@@ -265,7 +265,7 @@ function GridEditor() {
     return (
         <div className="container main-container">
             { !!solutions.length && (<div ref={componentRef} style={{margin:'15px'}}><div className="mb-3"><h1 className="mb-0">{title}</h1><span style={{fontSize: "0.7em"}}>par {author.first_name} {author.last_name}</span></div><button onClick={()=>share()} className="btn btn-info inv mb-1">Partager la grille</button><br/><button className="btn btn-success inv mb-1" onClick={()=>copyState()}>Partager mes progrès</button><br/><table className="t mt-4"><tbody>
-                <tr><td> </td>{solutions[0].map((val, j)=>(<td key={'colh' + j} style={{textAlign: 'center'}}>{romanize(j+1)}.</td>))}</tr>
+                <tr><td> </td>{solutions[0].map((val, j)=>(<td key={'colh' + j} style={{textAlign: 'center'}}>{(j+1)}.</td>))}</tr>
                 { solutions.map((line, i)=>(
                     <tr key={"line_" + i}><td>{i+1}.</td>{line.map((val, j)=>(<td key={i + ' ' + j} className={'box ' + (val === ' ' ? 'blackBox': '')}>
                         {val !== ' ' && (
@@ -293,7 +293,7 @@ function GridEditor() {
                         <h4>Verticalement</h4>
                         <div>
                         {def[1].map((l, i) => (
-                            <div key={"vdef" + i} style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{romanize(i+1)}. </span><span style={(selectedBlock && writingDirection === 'v' && i === selectedBlock[1]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
+                            <div key={"vdef" + i} style={{margin: '5px'}}><span style={{width: '3em', display: 'inline-block'}}>{(i+1)}. </span><span style={(selectedBlock && writingDirection === 'v' && i === selectedBlock[1]) ? {color: 'red', fontWeight: 'bold'} : {}}>{l}</span></div>
                         ))}
                         </div>
                     </div>
